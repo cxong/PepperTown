@@ -3,7 +3,6 @@ import Goomba from '../sprites/Goomba';
 import Turtle from '../sprites/Turtle';
 import PowerUp from '../sprites/PowerUp';
 import SMBTileSprite from '../sprites/SMBTileSprite';
-import AnimatedTiles from 'phaser-animated-tiles/dist/AnimatedTiles.min.js';
 import Fire from '../sprites/Fire';
 
 class GameScene extends Phaser.Scene {
@@ -14,7 +13,6 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.scenePlugin('animatedTiles', AnimatedTiles, 'animatedTiles', 'animatedTiles');
     }
 
     create() {
@@ -38,9 +36,6 @@ class GameScene extends Phaser.Scene {
         // It's defined as objects in Tiled.
         this.rooms = [];
 
-        // Running in 8-bit mode (16-bit mode is avaliable for the tiles, but I haven't done any work on sprites etc)
-        this.eightBit = true;
-
         // Add and play the music
         this.music = this.sound.add('overworld');
         this.music.play({
@@ -51,14 +46,11 @@ class GameScene extends Phaser.Scene {
         this.map = this.make.tilemap({
             key: 'map'
         });
-        this.tileset = this.map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
+        //this.tileset = this.map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
+        this.tileset = this.map.addTilesetImage('basictiles', 'basictiles');
 
         // Dynamic layer because we want breakable and animated tiles
         this.groundLayer = this.map.createDynamicLayer('world', this.tileset, 0, 0);
-
-        // We got the map. Tell animated tiles plugin to loop through the tileset properties and get ready.
-        // We don't need to do anything beyond this point for animated tiles to work.
-        this.sys.animatedTiles.init(this.map);
 
         // Probably not the correct way of doing this:
         this.physics.world.bounds.width = this.groundLayer.width;
@@ -392,14 +384,6 @@ class GameScene extends Phaser.Scene {
                         sprite.scene.blockEmitter.emitParticle(6, tile.x * 16, tile.y * 16);
                     }
                     break;
-                case 'toggle16bit':
-                    sprite.scene.eightBit = !sprite.scene.eightBit;
-                    if (sprite.scene.eightBit) {
-                        sprite.scene.tileset.setImage(sprite.scene.sys.textures.get('tiles'));
-                    } else {
-                        sprite.scene.tileset.setImage(sprite.scene.sys.textures.get('tiles-16bit'));
-                    }
-                    break;
                 default:
                     sprite.scene.sound.playAudioSprite('sfx', 'smb_bump');
                     break;
@@ -452,17 +436,6 @@ class GameScene extends Phaser.Scene {
             case 1:
                 let sound = this.sound.addAudioSprite('sfx');
                 sound.on('ended', (sound) => {
-                    /* this.mario.x = 48;
-                    this.mario.y = -32;
-                    this.mario.body.setVelocity(0);
-                    this.mario.alpha = 1;
-                    this.music.rate = 1;
-                    this.music.seek = 0;
-                    this.music.resume();
-                    this.levelTimer.hurry = false;
-                    this.levelTimer.time = 150 * 1000;
-                    this.levelTimer.displayedTime = 255;
-                    this.physics.world.resume(); */
                     sound.destroy();
                     this.scene.start('TitleScene');
                 });
@@ -542,7 +515,7 @@ class GameScene extends Phaser.Scene {
     parseObjectLayers() {
         // The map has one object layer with enemies as stamped tiles,
         // each tile has properties containing info on what enemy it represents.
-        this.map.getObjectLayer('enemies').objects.forEach(
+        /*this.map.getObjectLayer('enemies').objects.forEach(
             (enemy) => {
                 let enemyObject;
                 switch (this.tileset.tileProperties[enemy.gid - 1].name) {
@@ -568,10 +541,10 @@ class GameScene extends Phaser.Scene {
                 }
                 this.enemyGroup.add(enemyObject);
             }
-        );
+        );*/
 
         // The map has an object layer with 'modifiers' that do 'stuff', see below
-        this.map.getObjectLayer('modifiers').objects.forEach((modifier) => {
+        /*this.map.getObjectLayer('modifiers').objects.forEach((modifier) => {
             let tile, properties, type;
 
             // Get property stuff from the tile if present or just from the object layer directly
@@ -618,7 +591,7 @@ class GameScene extends Phaser.Scene {
                     });
                     break;
             }
-        });
+        });*/
     }
 
     createHUD() {
@@ -648,7 +621,7 @@ class GameScene extends Phaser.Scene {
         // Never called since 3.10 update (I called it from create before). If Everything is fine, I'll remove this method.
         // Scenes isn't properly destroyed yet.
         let ignore = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics'];
-        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'attractMode', 'destinations', 'rooms', 'eightBit', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'powerUps', 'keys', 'blockEmitter', 'bounceTile', 'levelTimer', 'score', 'finishLine', 'touchControls'];
+        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'attractMode', 'destinations', 'rooms', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'powerUps', 'keys', 'blockEmitter', 'bounceTile', 'levelTimer', 'score', 'finishLine', 'touchControls'];
         whatThisHad.forEach(key => {
             if (ignore.indexOf(key) === -1 && this[key]) {
                 switch (key) {

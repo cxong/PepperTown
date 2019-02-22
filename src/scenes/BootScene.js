@@ -28,6 +28,7 @@ class BootScene extends Phaser.Scene {
 
         // Tilemap with a lot of objects and tile-properties tricks
         this.load.tilemapTiledJSON('map', 'assets/tilemaps/super-mario.json');
+        //this.load.tilemapTiledJSON('map', 'assets/tilemaps/tiny16.json');
 
         // I load the tiles as a spritesheet so I can use it for both sprites and tiles,
         // Normally you should load it as an image.
@@ -36,12 +37,10 @@ class BootScene extends Phaser.Scene {
             frameHeight: 16,
             spacing: 2
         });
-
-        // Support for switching between 8-bit and 16-bit tiles
-        this.load.spritesheet('tiles-16bit', 'assets/images/super-mario-16bit.png', {
+        this.load.spritesheet('basictiles', 'assets/images/basictiles.png', {
             frameWidth: 16,
             frameHeight: 16,
-            spacing: 2
+            spacing: 0
         });
 
         // Spritesheets with fixed sizes. Should be replaced with atlas:
