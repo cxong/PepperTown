@@ -48,6 +48,10 @@ class BootScene extends Phaser.Scene {
             frameWidth: 16,
             frameHeight: 32
         });
+        this.load.spritesheet('pepper', 'assets/images/pepper.png', {
+            frameWidth: 24,
+            frameHeight: 32
+        });
 
         // Beginning of an atlas to replace the spritesheets above. Always use spriteatlases. I use TexturePacker to prepare them.
         // Check rawAssets folder for the TexturePacker project I use to prepare these files.

@@ -1,90 +1,26 @@
 export default function makeAnimations(scene) {
-    // TONS of animations. Everything animation-related is ugly and stupid below.
-    // TODO:  maybe use JSON to load animations
-    let config = {
-        key: 'brickTile',
-        frames: scene.anims.generateFrameNumbers('tiles', {
-            start: 14,
-            end: 14,
-            first: 14
-        })
-    };
-    scene.anims.create(config);
-    config = {
-        key: 'blockTile',
-        frames: scene.anims.generateFrameNumbers('tiles', {
-            start: 43,
-            end: 43,
-            first: 43
-        })
-    };
-    scene.anims.create(config);
+    let config = {};
 
-    // Mario animations: One without suffix, super after mushroom and fire after flower
-    ['', 'Super', 'Fire'].forEach((suffix) => {
-        config = {
-            key: 'run' + suffix,
-            frames: scene.anims.generateFrameNames('mario-sprites', {
-                prefix: 'mario/walk' + suffix,
-                start: 1,
-                end: 3
-            }),
-            frameRate: 10,
-            repeat: -1,
-            repeatDelay: 0
-        };
-        scene.anims.create(config);
+    // Jump, Stand and Turn: one frame each
+    ['up', 'right', 'down', 'left'].forEach(
+        (dir, index) => {
+            config = {
+                key: 'run' + dir,
+                frames: scene.anims.generateFrameNames('pepper', {
+                    frames: [0, 1, 2, 1].map(x => x + index * 7)
+                }),
+                frameRate: 10,
+                repeat: -1,
+                repeatDelay: 0
+            };
+            scene.anims.create(config);
 
-        // Jump, Stand and Turn: one frame each
-        ['jump', 'stand', 'turn', 'bend'].forEach(
-            (anim) => {
-                if (anim === 'bend' && suffix === '') {
-                    // No bend animation when Mario is small
-                    return;
-                }
-                config.key = anim + suffix;
-                config.frames = [{
-                    frame: 'mario/' + anim + suffix,
-                    key: 'mario-sprites'
-                }];
-                scene.anims.create(config);
-            }
-        );
-
-        // Climb
-        config.key = 'climb' + suffix;
-        config.frames = scene.anims.generateFrameNames('mario-sprites', {
-            prefix: 'mario/climb' + suffix,
-            start: 1,
-            end: 2
-        });
-        scene.anims.create(config);
-
-        // Swim
-        config.key = 'swim' + suffix;
-        config.frames = scene.anims.generateFrameNames('mario-sprites', {
-            prefix: 'mario/swim' + suffix,
-            start: 1,
-            end: 6
-        });
-        scene.anims.create(config);
-    });
-
-    config.key = 'death';
-    config.frames = scene.anims.generateFrameNumbers('mario', {
-        start: 22,
-        end: 22
-    });
-    scene.anims.create(config);
-
-    // Didn't find a good way to create an animation with frame names without a pattern.
-    let frames = [];
-    (['mario/half', 'mario/stand', 'mario/half', 'mario/standSuper', 'mario/half', 'mario/standSuper']).forEach(
-        frame => {
-            frames.push({
-                frame,
-                key: 'mario-sprites'
+            config.key = 'stand' + dir;
+            config.frames = scene.anims.generateFrameNames('pepper', {
+                start: index * 7 + 1,
+                end: index * 7 + 1
             });
+            scene.anims.create(config);
         }
     );
 

@@ -1,6 +1,4 @@
-import Mario from '../sprites/Mario';
-import PowerUp from '../sprites/PowerUp';
-import SMBTileSprite from '../sprites/SMBTileSprite';
+import Girl from '../sprites/girl';
 import Fire from '../sprites/Fire';
 
 class GameScene extends Phaser.Scene {
@@ -58,10 +56,7 @@ class GameScene extends Phaser.Scene {
         // Populate enemyGroup, powerUps, pipes and destinations from object layers
         this.parseObjectLayers();
 
-        // this.keys will contain all we need to control Mario.
-        // Any key could just replace the default (like this.key.jump)
         this.keys = {
-            jump: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X),
             fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
             left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
             right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
@@ -69,28 +64,7 @@ class GameScene extends Phaser.Scene {
             up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP)
         };
 
-        // Used when hitting a tile from below that should bounce up.
-        this.bounceTile = new SMBTileSprite({
-            scene: this
-        });
-
         this.createHUD();
-
-        // Prepare the finishLine
-        let worldEndAt = -1;
-        for (let x = 0; x < this.groundLayer.width; x++) {
-            let tile = this.groundLayer.getTileAt(x, 2);
-            if (tile && tile.properties.worldsEnd) {
-                worldEndAt = tile.pixelX;
-                break;
-            }
-        }
-        this.finishLine = {
-            x: worldEndAt,
-            flag: this.add.sprite(worldEndAt + 8, 4 * 16),
-            active: false
-        };
-        this.finishLine.flag.play('flag');
 
         // Touch controls is really just a quick hack to try out performance on mobiles,
         // It's not itended as a suggestion on how to do it in a real game.
@@ -150,8 +124,7 @@ class GameScene extends Phaser.Scene {
         // If the game ended while physics was disabled
         this.physics.world.resume();
 
-        // CREATE MARIO!!!
-        this.mario = new Mario({
+        this.mario = new Girl({
             scene: this,
             key: 'mario',
             x: 16 * 6,
@@ -183,12 +156,6 @@ class GameScene extends Phaser.Scene {
             return;
         }
 
-        if (this.mario.x > this.finishLine.x && this.finishLine.active) {
-            this.removeFlag();
-            this.physics.world.pause();
-            return;
-        }
-
         this.levelTimer.time -= delta * 2;
         if (this.levelTimer.time - this.levelTimer.displayedTime * 1000 < 1000) {
             this.levelTimer.displayedTime = Math.round(this.levelTimer.time / 1000);
@@ -214,7 +181,6 @@ class GameScene extends Phaser.Scene {
             }
         }
 
-        // Run the update method of Mario
         this.mario.update(this.keys, time, delta);
 
         // Run the update method of all enemies
@@ -245,44 +211,6 @@ class GameScene extends Phaser.Scene {
         // If the tile has a callback, lets fire it
         if (tile.properties.callback) {
             switch (tile.properties.callback) {
-                case 'questionMark':
-                    // Shift to a metallic block
-                    tile.index = 44;
-
-                    // Bounce it a bit
-                    sprite.scene.bounceTile.restart(tile);
-
-                    // The questionmark is no more
-                    tile.properties.callback = null;
-
-                    // Invincible blocks are only collidable from above, but everywhere once revealed
-                    tile.setCollision(true);
-
-                    // Check powerUp for what to do, make a coin if not defined
-                    let powerUp = tile.powerUp ? tile.powerUp : 'coin';
-
-                    // Make powerUp (including a coin)
-                    (() => new PowerUp({
-                        scene: sprite.scene,
-                        key: 'sprites16',
-                        x: tile.x * 16 + 8,
-                        y: tile.y * 16 - 8,
-                        type: powerUp
-                    }))();
-
-                    break;
-                case 'breakable':
-                    if (sprite.type === 'mario' && sprite.animSuffix === '') {
-                        // Can't break it anyway. Bounce it a bit.
-                        sprite.scene.bounceTile.restart(tile);
-                        sprite.scene.sound.playAudioSprite('sfx', 'smb_bump');
-                    } else {
-                        // get points
-                        sprite.scene.updateScore(50);
-                        sprite.scene.map.removeTileAt(tile.x, tile.y, true, true, this.groundLayer);
-                        sprite.scene.sound.playAudioSprite('sfx', 'smb_breakblock');
-                    }
-                    break;
                 default:
                     sprite.scene.sound.playAudioSprite('sfx', 'smb_bump');
                     break;
@@ -307,57 +235,6 @@ class GameScene extends Phaser.Scene {
     updateScore(score) {
         this.score.pts += score;
         this.score.textObject.setText(('' + this.score.pts).padStart(6, '0'));
-    }
-
-    removeFlag(step = 0) {
-        switch (step) {
-            case 0:
-                this.music.pause();
-                this.sound.playAudioSprite('sfx', 'smb_flagpole');
-                this.mario.play('mario/climb' + this.mario.animSuffix);
-                this.mario.x = this.finishLine.x - 1;
-                this.tweens.add({
-                    targets: this.finishLine.flag,
-                    y: 240 - 6 * 8,
-                    duration: 1500,
-                    onComplete: () => this.removeFlag(1)
-                });
-                this.tweens.add({
-                    targets: this.mario,
-                    y: 240 - 3 * 16,
-                    duration: 1000,
-                    onComplete: () => {
-                        this.mario.flipX = true;
-                        this.mario.x += 11;
-                    }
-                });
-                break;
-            case 1:
-                let sound = this.sound.addAudioSprite('sfx');
-                sound.on('ended', (sound) => {
-                    sound.destroy();
-                    this.scene.start('TitleScene');
-                });
-                sound.play('smb_stage_clear');
-
-                this.mario.play('run' + this.mario.animSuffix);
-
-                this.mario.flipX = false;
-                this.tweens.add({
-                    targets: this.mario,
-                    x: this.finishLine.x + 6 * 16,
-                    duration: 1000,
-                    onComplete: () => this.removeFlag(2)
-                });
-                break;
-            case 2:
-                this.tweens.add({
-                    targets: this.mario,
-                    alpha: 0,
-                    duration: 500
-                });
-                break;
-        }
     }
 
     toggleTouch() {
@@ -480,7 +357,7 @@ class GameScene extends Phaser.Scene {
         // Never called since 3.10 update (I called it from create before). If Everything is fine, I'll remove this method.
         // Scenes isn't properly destroyed yet.
         let ignore = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics'];
-        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'attractMode', 'destinations', 'rooms', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'powerUps', 'keys', 'bounceTile', 'levelTimer', 'score', 'finishLine', 'touchControls'];
+        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'destinations', 'rooms', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'powerUps', 'keys', 'levelTimer', 'score', 'touchControls'];
         whatThisHad.forEach(key => {
             if (ignore.indexOf(key) === -1 && this[key]) {
                 switch (key) {

@@ -1,15 +1,13 @@
-var SPEED = 100;
+var SPEED = 50;
 
-export default class Mario extends Phaser.GameObjects.Sprite {
+export default class Girl extends Phaser.GameObjects.Sprite {
     constructor(config) {
         super(config.scene, config.x, config.y, config.key);
         config.scene.physics.world.enable(this);
         config.scene.add.existing(this);
-        this.animSuffix = '';
-        this.small();
-
-        // this.animSuffix = 'Super';
-        // this.large();
+        this.dir = 'down';
+        this.body.setSize(16, 16);
+        this.body.offset.set(0, 16);
 
         this.wasHurt = -1;
         this.flashToggle = false;
@@ -18,7 +16,7 @@ export default class Mario extends Phaser.GameObjects.Sprite {
             timer: -1,
             step: 0
         };
-        this.anims.play('stand');
+        this.anims.play('stand' + this.dir);
         this.alive = true;
         this.type = 'mario';
         this.jumpTimer = 0;
@@ -61,17 +59,8 @@ export default class Mario extends Phaser.GameObjects.Sprite {
             right: keys.right.isDown || this.scene.touchControls.right,
             up: keys.up.isDown || this.scene.touchControls.up,
             down: keys.down.isDown || this.scene.touchControls.down,
-            jump: keys.jump.isDown || this.scene.touchControls.jump,
             fire: keys.fire.isDown
         };
-
-        if (input.fire && this.animSuffix === 'Fire' && this.fireCoolDown < 0) {
-            let fireball = this.scene.fireballs.get(this);
-            if (fireball) {
-                fireball.fire(this.x, this.y, this.flipX);
-                this.fireCoolDown = 300;
-            }
-        }
 
         this.jumpTimer -= delta;
 
@@ -79,32 +68,26 @@ export default class Mario extends Phaser.GameObjects.Sprite {
         this.body.setVelocityY(0);
         if (input.left) {
             this.body.setVelocityX(-SPEED);
-            this.flipX = true;
+            this.dir = 'left';
         } else if (input.right) {
             this.body.setVelocityX(SPEED);
-            this.flipX = false;
+            this.dir = 'right';
         } else if (input.down) {
             this.body.setVelocityY(SPEED);
+            this.dir = 'down';
         } else if (input.up) {
             this.body.setVelocityY(-SPEED);
+            this.dir = 'up';
         }
 
         let anim = null;
         if (this.body.velocity.x !== 0 || this.body.velocity.y !== 0) {
             anim = 'run';
-            if ((input.left || input.right) && ((this.body.velocity.x > 0 && this.body.acceleration.x < 0) || (this.body.velocity.x < 0 && this.body.acceleration.x > 0))) {
-                anim = 'turn';
-            } else if (this.animSuffix !== '' && input.down && !(input.right || input.left)) {
-                anim = 'bend';
-            }
         } else {
             anim = 'stand';
-            if (this.animSuffix !== '' && input.down && !(input.right || input.left)) {
-                anim = 'bend';
-            }
         }
 
-        anim += this.animSuffix;
+        anim += this.dir;
         if (this.anims.currentAnim.key !== anim && !this.scene.physics.world.isPaused) {
             this.anims.play(anim);
         }
@@ -114,27 +97,6 @@ export default class Mario extends Phaser.GameObjects.Sprite {
         }
 
         this.physicsCheck = true;
-    }
-
-    jump() {
-        if (!this.body.blocked.down && !this.jumping) {
-            return;
-        }
-
-        if (!this.jumping) {
-            if (this.animSuffix === '') {
-                this.scene.sound.playAudioSprite('sfx', 'smb_jump-small');
-            } else {
-                this.scene.sound.playAudioSprite('sfx', 'smb_jump-super');
-            }
-        }
-        if (this.body.velocity.y < 0 || this.body.blocked.down) {
-            this.body.setVelocityY(-200);
-        }
-        if (!this.jumping) {
-            this.jumpTimer = 300;
-        }
-        this.jumping = true;
     }
 
     enemyBounce(enemy) {
@@ -156,16 +118,6 @@ export default class Mario extends Phaser.GameObjects.Sprite {
         }
     }
 
-    small() {
-        this.body.setSize(10, 10);
-        this.body.offset.set(3, 14);
-    }
-
-    large() {
-        this.body.setSize(10, 22);
-        this.body.offset.set(3, 10);
-    }
-
     die() {
         this.scene.music.pause();
         this.play('death');
@@ -181,7 +133,6 @@ export default class Mario extends Phaser.GameObjects.Sprite {
                     let cam = this.scene.cameras.main;
                     let layer = this.scene.groundLayer;
                     cam.setBounds(room.x, 0, room.width * layer.scaleX, layer.height * layer.scaleY);
-                    this.scene.finishLine.active = (room.x === 0);
                     this.scene.cameras.main.setBackgroundColor(room.sky);
                 }
             }
