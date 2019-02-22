@@ -68,9 +68,6 @@ class BootScene extends Phaser.Scene {
         });
 
         this.load.bitmapFont('font', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
-
-        // This json contain recorded gamep
-        this.load.json('attractMode', 'assets/json/attractMode.json');
     }
 }
 

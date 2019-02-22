@@ -50,8 +50,6 @@ export default class Goomba extends Enemy {
 
     getFlat(enemy, mario) {
         enemy.play('goombaFlat');
-        enemy.body.setVelocityX(0);
-        enemy.body.acceleration.x = 0;
         // Keep goomba flat for 500ms, then remove it.
         enemy.killAt = 500;
     }

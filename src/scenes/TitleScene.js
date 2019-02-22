@@ -77,7 +77,6 @@ class TitleScene extends Phaser.Scene {
     }
 
     restartScene() {
-        //        this.attractMode.stop();
         this.scene.stop('GameScene');
         this.scene.launch('GameScene');
         this.scene.bringToTop();

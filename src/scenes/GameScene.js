@@ -1,6 +1,4 @@
 import Mario from '../sprites/Mario';
-import Goomba from '../sprites/Goomba';
-import Turtle from '../sprites/Turtle';
 import PowerUp from '../sprites/PowerUp';
 import SMBTileSprite from '../sprites/SMBTileSprite';
 import Fire from '../sprites/Fire';
@@ -16,18 +14,6 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-        // This scene is either called to run in attract mode in the background of the title screen
-        // or for actual gameplay. Attract mode is based on a JSON-recording.
-        if (this.registry.get('attractMode')) {
-            this.attractMode = {
-                recording: this.sys.cache.json.entries.entries.attractMode,
-                current: 0,
-                time: 0
-            };
-        } else {
-            this.attractMode = null;
-        }
-
         // Places to warp to (from pipes). These coordinates is used also to define current room (see below)
         this.destinations = {};
 
@@ -75,31 +61,13 @@ class GameScene extends Phaser.Scene {
         // this.keys will contain all we need to control Mario.
         // Any key could just replace the default (like this.key.jump)
         this.keys = {
-            jump: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-            jump2: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X),
+            jump: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X),
             fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
             left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
             right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-            down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+            down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
+            up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP)
         };
-
-        // An emitter for bricks when blocks are destroyed.
-        this.blockEmitter = this.add.particles('mario-sprites');
-
-        this.blockEmitter.createEmitter({
-            frame: {
-                frames: ['brick'],
-                cycle: true
-            },
-            gravityY: 1000,
-            lifespan: 2000,
-            speed: 400,
-            angle: {
-                min: -90 - 25,
-                max: -45 - 25
-            },
-            frequency: -1
-        });
 
         // Used when hitting a tile from below that should bounce up.
         this.bounceTile = new SMBTileSprite({
@@ -206,69 +174,10 @@ class GameScene extends Phaser.Scene {
     }
 
     update(time, delta) {
-        if (!this.attractMode) {
-            this.record(delta);
-        }
-
-        // this.fireballs.children.forEach((fire)=>{
-        //    fire.update(time, delta);
-        // })
-
         Array.from(this.fireballs.children.entries).forEach(
             (fireball) => {
                 fireball.update(time, delta);
             });
-
-        /* console.log(time); */
-        if (this.attractMode) {
-            this.attractMode.time += delta;
-
-            // console.log(this.attractMode.current);
-            // console.log(this.attractMode.current, this.attractMode.recording.length);
-
-            if (this.mario.y > 240 || (this.attractMode.recording.length <= this.attractMode.current + 2) || this.attractMode.current === 14000) {
-                this.attractMode.current = 0;
-                this.attractMode.time = 0;
-                this.mario.x = 16 * 6; // 3500,
-                this.tick = 0;
-                this.registry.set('restartScene', true);
-
-                // this.scene.stop();
-                // this.scene.switch('GameScene');
-                // this.create();
-                console.log('RESET');
-
-                // this.mario.y = this.sys.game.config.height - 48 -48
-                // return;
-            }
-
-            if (this.attractMode.time >= this.attractMode.recording[this.attractMode.current + 1].time) {
-                this.attractMode.current++;
-                this.mario.x = this.attractMode.recording[this.attractMode.current].x;
-                this.mario.y = this.attractMode.recording[this.attractMode.current].y;
-                this.mario.body.setVelocity(this.attractMode.recording[this.attractMode.current].vx, this.attractMode.recording[this.attractMode.current].vy);
-            }
-            this.keys = {
-                jump: {
-                    isDown: this.attractMode.recording[this.attractMode.current].keys.jump
-                },
-                jump2: {
-                    isDown: false
-                },
-                left: {
-                    isDown: this.attractMode.recording[this.attractMode.current].keys.left
-                },
-                right: {
-                    isDown: this.attractMode.recording[this.attractMode.current].keys.right
-                },
-                down: {
-                    isDown: this.attractMode.recording[this.attractMode.current].keys.down
-                },
-                fire: {
-                    isDown: this.attractMode.recording[this.attractMode.current].keys.fire
-                }
-            };
-        }
 
         if (this.physics.world.isPaused) {
             return;
@@ -324,16 +233,7 @@ class GameScene extends Phaser.Scene {
     }
 
     tileCollision(sprite, tile) {
-        if (sprite.type === 'turtle') {
-            if (tile.y > Math.round(sprite.y / 16)) {
-                // Turtles ignore the ground
-                return;
-            }
-        } else if (sprite.type === 'mario') {
-            // Mario is bending on a pipe that leads somewhere:
-            if (sprite.bending && tile.properties.pipe && tile.properties.dest) {
-                sprite.enterPipe(tile.properties.dest, tile.rotation);
-            }
+        if (sprite.type === 'mario') {
         }
 
         // If it's Mario and the body isn't blocked up it can't hit question marks or break bricks
@@ -381,7 +281,6 @@ class GameScene extends Phaser.Scene {
                         sprite.scene.updateScore(50);
                         sprite.scene.map.removeTileAt(tile.x, tile.y, true, true, this.groundLayer);
                         sprite.scene.sound.playAudioSprite('sfx', 'smb_breakblock');
-                        sprite.scene.blockEmitter.emitParticle(6, tile.x * 16, tile.y * 16);
                     }
                     break;
                 default:
@@ -470,46 +369,6 @@ class GameScene extends Phaser.Scene {
             this.touchControls.dpad.alpha = 0.5;
             this.touchControls.abutton.alpha = 0.5;
         }
-    }
-
-    record(delta) {
-        let update = false;
-        let keys = {
-            jump: this.keys.jump.isDown || this.keys.jump2.isDown,
-            left: this.keys.left.isDown,
-            right: this.keys.right.isDown,
-            down: this.keys.down.isDown,
-            fire: this.keys.fire.isDown
-        };
-        if (typeof (recording) === 'undefined') {
-            console.log('DEFINE');
-            window.recording = [];
-            window.time = 0;
-            this.recordedKeys = {};
-            update = true;
-        } else {
-            update = (time - recording[recording.length - 1].time) > 200; // update at least 5 times per second
-        }
-        time += delta;
-        if (!update) {
-            // update if keys changed
-            ['jump', 'left', 'right', 'down', 'fire'].forEach((dir) => {
-                if (keys[dir] !== this.recordedKeys[dir]) {
-                    update = true;
-                }
-            });
-        }
-        if (update) {
-            recording.push({
-                time,
-                keys,
-                x: this.mario.x,
-                y: this.mario.y,
-                vx: this.mario.body.velocity.x,
-                vy: this.mario.body.velocity.y
-            });
-        }
-        this.recordedKeys = keys;
     }
 
     parseObjectLayers() {
@@ -621,7 +480,7 @@ class GameScene extends Phaser.Scene {
         // Never called since 3.10 update (I called it from create before). If Everything is fine, I'll remove this method.
         // Scenes isn't properly destroyed yet.
         let ignore = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics'];
-        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'attractMode', 'destinations', 'rooms', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'powerUps', 'keys', 'blockEmitter', 'bounceTile', 'levelTimer', 'score', 'finishLine', 'touchControls'];
+        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'attractMode', 'destinations', 'rooms', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'powerUps', 'keys', 'bounceTile', 'levelTimer', 'score', 'finishLine', 'touchControls'];
         whatThisHad.forEach(key => {
             if (ignore.indexOf(key) === -1 && this[key]) {
                 switch (key) {

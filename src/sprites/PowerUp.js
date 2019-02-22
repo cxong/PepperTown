@@ -92,12 +92,6 @@ export default class PowerUp extends Phaser.GameObjects.Sprite {
                 mario.animSuffix = 'Fire';
                 powerUp.scene.sound.playAudioSprite('sfx', 'smb_powerup');
                 break;
-            case 'mushroom':
-                // Powerup will not be removed until next loop after physics is running again
-                // (physics is paused by mario.resize), until then we'll just hide it.
-                mario.resize(true);
-                powerUp.scene.sound.playAudioSprite('sfx', 'smb_powerup');
-                break;
             case 'star':
                 mario.star.active = true;
                 mario.star.timer = 10000;

@@ -40,7 +40,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
             if (this.x < this.scene.cameras.main.scrollX + this.scene.sys.game.canvas.width + 32) {
                 this.beenSeen = true;
                 this.body.velocity.x = this.direction;
-                this.body.allowGravity = true;
                 return true;
             }
             return false;

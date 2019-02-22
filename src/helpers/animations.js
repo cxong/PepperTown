@@ -87,22 +87,6 @@ export default function makeAnimations(scene) {
             });
         }
     );
-    config = {
-        key: 'grow',
-        frames: frames,
-        frameRate: 10,
-        repeat: 0,
-        repeatDelay: 0
-    };
-    scene.anims.create(config);
-    config = {
-        key: 'shrink',
-        frames: frames.reverse(),
-        frameRate: 10,
-        repeat: 0,
-        repeatDelay: 0
-    };
-    scene.anims.create(config);
 
     // ALL MARIO ANIMATIONS DONE
 

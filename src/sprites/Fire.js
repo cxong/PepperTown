@@ -27,8 +27,6 @@ export default class Fire extends Phaser.GameObjects.Sprite {
     fire(x, y, left) {
         this.setActive(true);
         this.setVisible(true);
-        // this.scene.add.existing(this);
-        this.body.allowGravity = true;
 
         this.setPosition(x, y);
         this.body.velocity.x = 400 * (left ? -1 : 1);
@@ -64,7 +62,6 @@ export default class Fire extends Phaser.GameObjects.Sprite {
     }
 
     explode() {
-        this.body.allowGravity = false;
         this.body.velocity.y = 0;
         this.play('fireExplode');
     }
