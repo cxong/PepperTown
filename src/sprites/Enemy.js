@@ -40,7 +40,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     hurtPC(enemy, pc) {
         if (pc.hurtBy(enemy)) {
             enemy.die(enemy, enemy.scene.damageFactor);
-            enemy.scene.sound.playAudioSprite('sfx', 'smb_stomp');
         }
     }
 
@@ -50,7 +49,6 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
             return;
         }
         this.die(this);
-        this.scene.sound.playAudioSprite('sfx', 'smb_stomp');
     }
 
     kill() {

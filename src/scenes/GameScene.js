@@ -59,9 +59,9 @@ class GameScene extends Phaser.Scene {
         this.createHUD();
 
         this.coinGroup = this.add.group();
-        this.music.play({
+        /*this.music.play({
             loop: true
-        });
+        });*/
         if (this.attractMode) {
             this.music.volume = 0;
         }
@@ -178,6 +178,11 @@ class GameScene extends Phaser.Scene {
         this.cash.textObject.setText(('' + this.cash.value).padStart(6, '0'));
         if (added) {
             this.coinGroup.add(new Coin(this, x, y, isSmall));
+            const sound = this.sound.add('coins');
+            sound.play();
+            if (isSmall) {
+                sound.volume = 0.5;
+            }
         }
     }
 
