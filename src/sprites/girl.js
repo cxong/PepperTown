@@ -144,9 +144,9 @@ export default class Girl extends Phaser.GameObjects.Sprite {
     }
 
     onHeal() {
-        const healValue = HEAL_RATE * this.scene.healFactor;
+        const healValue = HEAL_RATE;
         this.health.value += healValue;
-        this.healCooldown = HEAL_COOLDOWN;
+        this.healCooldown = HEAL_COOLDOWN / this.scene.healFactor;
         this.scene.setCash(this.scene.cash.value + healValue);
     }
 

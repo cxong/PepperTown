@@ -218,10 +218,22 @@ class GameScene extends Phaser.Scene {
                 {iconFrame: 9 + 10 * 13, text: 'SPEED 4', effect: s => s.speedMultiplier = 2.5, cost: 1500},
                 {iconFrame: 8 + 10 * 13, text: 'SPEED 5', effect: s => s.speedMultiplier = 4, cost: 2500}
             ],
-            [{iconFrame: 7 + 11 * 13, text: 'SHIELD 1', effect: s => s.defenseFactor = 0.8, cost: 400}]
+            [
+                {iconFrame: 7 + 11 * 13, text: 'SHIELD 1', effect: s => s.defenseFactor = 0.8, cost: 400},
+                {iconFrame: 6 + 11 * 13, text: 'SHIELD 2', effect: s => s.defenseFactor = 0.7, cost: 600},
+                {iconFrame: 5 + 11 * 13, text: 'SHIELD 3', effect: s => s.defenseFactor = 0.63, cost: 900},
+                {iconFrame: 9 + 11 * 13, text: 'SHIELD 4', effect: s => s.defenseFactor = 0.58, cost: 1100},
+                {iconFrame: 8 + 11 * 13, text: 'SHIELD 5', effect: s => s.defenseFactor = 0.5, cost: 1500}
+            ]
         ]));
         this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP', [
-            [{iconFrame: 1 + 13 * 13, text: 'HERBS 1', effect: s => s.healFactor = 2, cost: 200}]
+            [
+                {iconFrame: 1 + 13 * 13, text: 'HERBS 1', effect: s => s.healFactor = 2, cost: 200},
+                {iconFrame: 1 + 12 * 13, text: 'HERBS 2', effect: s => s.healFactor = 3, cost: 400},
+                {iconFrame: 2 + 13 * 13, text: 'HERBS 3', effect: s => s.healFactor = 5, cost: 750},
+                {iconFrame: 2 + 12 * 13, text: 'HERBS 4', effect: s => s.healFactor = 8, cost: 1000},
+                {iconFrame: 0 + 12 * 13, text: 'HERBS 5', effect: s => s.healFactor = 13, cost: 1300}
+            ]
         ]));
         this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP', [
             [{iconFrame: 0 + 7 * 13, text: 'SWORD 1', effect: s => s.damageFactor = 2, cost: 1000}],
