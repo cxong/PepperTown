@@ -45,7 +45,7 @@ export default class Slime extends Enemy {
                 if (!this.ai.target || this.ai.target.health.value < 1) {
                     this.ai.state = 'idle';
                 } else {
-                    let vel = new Phaser.Geom.Point(this.ai.target.x - this.x, this.ai.target.y - this.y);
+                    let vel = new Phaser.Geom.Point(this.ai.target.body.x - this.body.x, this.ai.target.body.y - this.body.y);
                     if (Phaser.Geom.Point.GetMagnitude(vel) < 5) {
                         this.body.setVelocity(0, 0);
                     } else if (Phaser.Geom.Point.GetMagnitude(vel) > LOST_DISTANCE) {

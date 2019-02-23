@@ -105,7 +105,7 @@ class GameScene extends Phaser.Scene {
         }
 
         // Spawn slimes
-        const idealSlimes = Math.round(this.enemiesKilled * 0.02) + 20;
+        const idealSlimes = Math.min(Math.round(this.enemiesKilled * 0.02) + 20, this.left.pts);
         while (this.enemyGroup.getLength() < idealSlimes) {
             this.enemyGroup.add(new Slime({
                 scene: this,
@@ -164,13 +164,13 @@ class GameScene extends Phaser.Scene {
     }
 
     onKill() {
-        this.score.pts += 100;
-        this.score.textObject.setText(('' + this.score.pts).padStart(6, '0'));
+        this.left.pts--;
+        this.left.textObject.setText(('' + this.left.pts).padStart(6, '0'));
         this.enemiesKilled++;
     }
 
     createHUD() {
-        const hud = this.add.bitmapText(5 * 8, 8, 'font', 'MARIO                      TIME', 8);
+        const hud = this.add.bitmapText(5 * 8, 8, 'font', 'LEFT                       TIME', 8);
         hud.setScrollFactor(0, 0);
         this.levelTimer = {
             textObject: this.add.bitmapText(36 * 8, 16, 'font', '255', 8),
@@ -179,16 +179,17 @@ class GameScene extends Phaser.Scene {
             hurry: false
         };
         this.levelTimer.textObject.setScrollFactor(0, 0);
-        this.score = {
-            pts: 0,
+        this.left = {
+            pts: TOTAL_SLIMES,
             textObject: this.add.bitmapText(5 * 8, 16, 'font', '000000', 8)
         };
-        this.score.textObject.setScrollFactor(0, 0);
+        this.left.textObject.setText(('' + this.left.pts).padStart(6, '0'));
+        this.left.textObject.setScrollFactor(0, 0);
 
         if (this.attractMode) {
             hud.alpha = 0;
             this.levelTimer.textObject.alpha = 0;
-            this.score.textObject.alpha = 0;
+            this.left.textObject.alpha = 0;
         }
     }
 

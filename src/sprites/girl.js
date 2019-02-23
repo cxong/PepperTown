@@ -87,7 +87,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
                     this.ai.state = 'running';
                 } else {
                     // face target
-                    const vel = new Phaser.Geom.Point(this.ai.target.x - this.x, this.ai.target.y - this.y);
+                    const vel = new Phaser.Geom.Point(this.ai.target.body.x - this.body.x, this.ai.target.body.y - this.body.y);
                     if (Math.abs(vel.x) > Math.abs(vel.y)) {
                         this.dir = vel.x > 0 ? 'right' : 'left';
                     } else {
