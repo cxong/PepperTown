@@ -23,27 +23,11 @@ export default class Slime extends Enemy {
             return;
         }
 
-        // Collide with Mario!
-        this.scene.physics.world.overlap(this, this.scene.mario, this.marioHit);
+        this.scene.physics.world.overlap(this, this.scene.mario, this.hurtPC);
     }
 
-    marioHit(enemy, mario) {
-        if (enemy.verticalHit(enemy, mario)) {
-            // Mario jumps on the enemy
-            mario.enemyBounce(enemy);
-            enemy.scene.sound.playAudioSprite('sfx', 'smb_stomp');
-            enemy.getFlat(enemy, mario);
-            // get points
-            enemy.scene.updateScore(100);
-        } else {
-            // PC collides with the enemy
-            enemy.hurtPC(enemy, mario);
-        }
-    }
-
-    getFlat(enemy, mario) {
-        enemy.play('goombaFlat');
-        // Keep goomba flat for 500ms, then remove it.
+    die(enemy, pc) {
+        enemy.alpha = 0.2;
         enemy.killAt = 500;
     }
 }

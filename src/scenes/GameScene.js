@@ -36,6 +36,7 @@ class GameScene extends Phaser.Scene {
 
         // Dynamic layer because we want breakable and animated tiles
         this.groundLayer = this.map.createDynamicLayer('world', this.tileset, 0, 0);
+        this.groundLayer2 = this.map.createDynamicLayer('world2', this.tileset, 0, 0);
 
         // Probably not the correct way of doing this:
         this.physics.world.bounds.width = this.groundLayer.width;

@@ -32,17 +32,12 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         return true;
     }
 
-    verticalHit(enemy, mario) {
-        // quick check if a collision between the enemy and Mario is from above.
-        if (!mario.alive) {
-            return false;
+    hurtPC(enemy, pc) {
+        if (pc.hurtBy(enemy)) {
+            enemy.die(enemy, pc);
+            enemy.scene.updateScore(100);
+            enemy.scene.sound.playAudioSprite('sfx', 'smb_stomp');
         }
-        return mario.body.velocity.y >= 0 && (mario.body.y + mario.body.height) - enemy.body.y < 10;
-    }
-
-    hurtPC(enemy, mario) {
-        // send the enemy to mario hurt method (if mario got a star this will not end well for the enemy)
-        this.scene.mario.hurtBy(enemy);
     }
 
     starKilled() {

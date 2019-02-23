@@ -1,6 +1,7 @@
 var SPEED = 50;
 var START_X = 16 * 6;
 var WAS_HURT = 1000;
+var FIRE_COOLDOWN = 500;
 
 export default class Girl extends Phaser.GameObjects.Sprite {
     constructor(config) {
@@ -15,8 +16,8 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         this.flashToggle = false;
         this.anims.play('stand' + this.dir);
         this.health = {
-            max: 10,
-            value: 10
+            max: 5,
+            value: 5
         };
         this.type = 'mario';
         this.fireCoolDown = 0;
@@ -27,11 +28,6 @@ export default class Girl extends Phaser.GameObjects.Sprite {
     }
 
     update(keys, time, delta) {
-        // Don't do updates while dead
-        if (this.health.value < 1) {
-            return;
-        }
-
         this.fireCoolDown -= delta;
 
         //this.scene.physics.world.collide(this, this.scene.groundLayer, this.scene.tileCollision);
@@ -71,10 +67,11 @@ export default class Girl extends Phaser.GameObjects.Sprite {
             case 'fighting':
                 if (this.health.value < 1) {
                     this.ai.state = 'returning';
+                } else if (!this.ai.target || !this.ai.target.active) {
+                    this.ai.state = 'running';
                 } else {
                     // TODO: face target
                     input.fire = true;
-                    // TODO: no target, go to running
                 }
                 break;
             case 'resting':
@@ -123,20 +120,19 @@ export default class Girl extends Phaser.GameObjects.Sprite {
 
     hurtBy(enemy) {
         if (this.health.value < 1) {
-            return;
+            return false;
         }
         if (this.wasHurt < 1) {
             this.health.value--;
-            if (this.health.value < 1) {
-                this.die();
-            } else {
-                this.wasHurt = WAS_HURT;
-            }
+            this.wasHurt = WAS_HURT;
         }
-    }
-
-    die() {
-        this.scene.sound.playAudioSprite('sfx', 'smb_mariodie');
+        this.ai.state = 'fighting';
+        this.ai.target = enemy;
+        if (this.fireCoolDown < 1) {
+            this.fireCoolDown = FIRE_COOLDOWN;
+            return true;
+        }
+        return false;
     }
 
     setRoomBounds(rooms) {
