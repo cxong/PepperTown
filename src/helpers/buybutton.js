@@ -20,13 +20,18 @@ export default class BuyButton extends Phaser.GameObjects.Sprite {
         label.setOrigin(0, 0);
         group.add(label);
         this.effect = button.effect;
+        this.cost = button.cost;
     }
 
     onClick(scene) {
         if (this.disabled) {
             return;
         }
+        if (this.scene.cash.value < this.cost) {
+            return;
+        }
         this.effect(scene);
+        this.scene.setCash(this.scene.cash.value - this.cost);
         this.setFrame(1);
         this.disabled = true;
     }

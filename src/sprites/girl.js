@@ -68,7 +68,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         };
         switch (this.ai.state) {
             case 'running':
-                if (this.health.value < 1) {
+                if (this.health.value < 1 || this.x > 30 * 16) {
                     this.ai.state = 'returning';
                 } else {
                     input.right = true;

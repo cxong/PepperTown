@@ -205,7 +205,7 @@ class GameScene extends Phaser.Scene {
 
         this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', []));
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
-            {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2}
+            {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2, cost: 1000}
         ]));
         this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP', []));
         this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP', []));
