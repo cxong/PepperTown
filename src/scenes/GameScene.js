@@ -1,6 +1,7 @@
 import Girl from '../sprites/girl';
 import Slime from '../sprites/slime';
 import Fire from '../sprites/Fire';
+import SelectFrame from '../helpers/selectframe';
 
 const CAMERA_PAN = 10;
 const TOTAL_SLIMES = 5000;  // must kill this many to end
@@ -16,11 +17,6 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-        // Array of rooms to keep bounds within to avoid the need of multiple tilemaps per level.
-        // It might be a singe screen room like when going down a pipe or a sidescrolling level.
-        // It's defined as objects in Tiled.
-        this.rooms = [];
-
         // Add and play the music
         this.music = this.sound.add('overworld');
         this.music.play({
@@ -133,6 +129,10 @@ class GameScene extends Phaser.Scene {
             sprite => { sprite.update(this.keys, time, delta); }
         );
 
+        this.shops.children.entries.forEach(
+            sprite => { sprite.update(delta); }
+        );
+
         // Run the update method of all enemies
         this.enemyGroup.children.entries.forEach(
             (sprite) => {
@@ -191,24 +191,22 @@ class GameScene extends Phaser.Scene {
             this.levelTimer.textObject.alpha = 0;
             this.left.textObject.alpha = 0;
         }
-    }
 
-    cleanUp() {
-        // Never called since 3.10 update (I called it from create before). If Everything is fine, I'll remove this method.
-        // Scenes isn't properly destroyed yet.
-        let ignore = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics'];
-        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'rooms', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'keys', 'levelTimer', 'score', 'touchControls'];
-        whatThisHad.forEach(key => {
-            if (ignore.indexOf(key) === -1 && this[key]) {
-                switch (key) {
-                    case 'enemyGroup':
-                    case 'music':
-                    case 'map':
-                        this[key].destroy();
-                        break;
-                }
-                this[key] = null;
-            }
+        // Add selection frames for the shops
+        this.shops = this.add.group();
+        this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16));
+        this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16));
+        this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16));
+        this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16));
+
+        this.input.on('pointerdown', (event, gameObjects) => {
+            console.log('down', event, gameObjects);
+        });
+        this.input.on('pointerover', (event, gameObjects) => {
+            gameObjects[0].hovered = true;
+        });
+        this.input.on('pointerout', (event, gameObjects) => {
+            gameObjects[0].hovered = false;
         });
     }
 }
