@@ -53,6 +53,7 @@ export default class BuyButton extends Phaser.GameObjects.Sprite {
         }
         this.effect(scene);
         this.scene.setCash(this.scene.cash.value - this.cost);
+        this.scene.sounds.buy.play();
         this.buttonIdx++;
         this.setButton();
     }

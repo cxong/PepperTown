@@ -22,6 +22,9 @@ class GameScene extends Phaser.Scene {
 
         // Add and play the music
         this.music = this.sound.add('overworld');
+        this.sounds = {
+            buy: this.sound.add('buy')
+        };
 
         // Add the map + bind the tileset
         this.map = this.make.tilemap({

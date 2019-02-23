@@ -103,6 +103,10 @@ class BootScene extends Phaser.Scene {
             'assets/audio/hit.ogg',
             'assets/audio/hit.mp3'
         ]);
+        this.load.audio('buy', [
+            'assets/audio/buy.ogg',
+            'assets/audio/buy.mp3'
+        ]);
 
         this.load.bitmapFont('font', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
     }
