@@ -10,6 +10,8 @@ export default class HealthBar extends Phaser.GameObjects.Sprite {
     }
 
     update() {
+        this.depth = this.y + 32;
+        this.barFront.depth = this.y + 32;
         this.x = this.owner.x;
         this.y = this.owner.y - 12;
         const scale = this.owner.health.value / this.owner.health.max;

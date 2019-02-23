@@ -12,6 +12,7 @@ export default class Slime extends Enemy {
     }
 
     update(time, delta) {
+        this.depth = this.y;
         this.health.bar.update();
 
         if (this.killAt !== 0) {

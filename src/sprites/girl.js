@@ -15,7 +15,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         config.scene.add.existing(this);
         this.dir = 'down';
         this.body.setSize(16, 16);
-        this.body.offset.set(0, 16);
+        this.body.offset.set(4, 16);
 
         this.wasHurt = -1;
         this.flashToggle = false;
@@ -42,6 +42,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
     }
 
     update(keys, time, delta) {
+        this.depth = this.y;
         this.fireCoolDown -= delta;
 
         this.health.bar.update();
