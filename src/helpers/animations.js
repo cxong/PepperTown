@@ -65,4 +65,22 @@ export default function makeAnimations(scene) {
         }]
     };
     scene.anims.create(config);
+    config = {
+        key: 'coin',
+        frames: scene.anims.generateFrameNames('coin', {
+            start: 8,
+            end: 15
+        }),
+        frameRate: 10
+    };
+    scene.anims.create(config);
+    config = {
+        key: 'coin-small',
+        frames: scene.anims.generateFrameNames('coin', {
+            start: 24,
+            end: 32
+        }),
+        frameRate: 10
+    };
+    scene.anims.create(config);
 }

@@ -1,8 +1,8 @@
 import Girl from '../sprites/girl';
 import Slime from '../sprites/slime';
-import Fire from '../sprites/Fire';
 import SelectFrame from '../helpers/selectframe';
 import BuyButton from '../helpers/buybutton';
+import Coin from '../sprites/coin';
 
 const CAMERA_PAN = 10;
 const TOTAL_SLIMES = 5000;  // must kill this many to end
@@ -18,11 +18,10 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
+        this.attractMode = this.registry.get('attractMode');
+
         // Add and play the music
         this.music = this.sound.add('overworld');
-        this.music.play({
-            loop: true
-        });
 
         // Add the map + bind the tileset
         this.map = this.make.tilemap({
@@ -59,7 +58,10 @@ class GameScene extends Phaser.Scene {
 
         this.createHUD();
 
-        // Mute music while in attract mode
+        this.coinGroup = this.add.group();
+        this.music.play({
+            loop: true
+        });
         if (this.attractMode) {
             this.music.volume = 0;
         }
@@ -78,12 +80,6 @@ class GameScene extends Phaser.Scene {
 
         this.cameras.main.roundPixels = true;
 
-        this.fireballs = this.add.group({
-            classType: Fire,
-            maxSize: 10,
-            runChildUpdate: false // Due to https://github.com/photonstorm/phaser/issues/3724
-        });
-
         // Global effects
         this.speedMultiplier = 1;
         this.healFactor = 1;
@@ -95,11 +91,6 @@ class GameScene extends Phaser.Scene {
     }
 
     update(time, delta) {
-        Array.from(this.fireballs.children.entries).forEach(
-            (fireball) => {
-                fireball.update(time, delta);
-            });
-
         if (this.physics.world.isPaused) {
             return;
         }
@@ -169,10 +160,10 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    onKill(hp) {
+    onKill(hp, x, y) {
         this.setLeft(this.left.pts - 1);
         this.enemiesKilled++;
-        this.setCash(this.cash.value + Math.round(hp * 5));
+        this.setCash(this.cash.value + Math.round(hp * 5), x, y);
     }
 
     setLeft(left) {
@@ -180,9 +171,14 @@ class GameScene extends Phaser.Scene {
         this.left.textObject.setText(('' + this.left.pts).padStart(4, '0'));
     }
 
-    setCash(value) {
+    setCash(value, x, y) {
+        const added = value > this.cash.value;
+        const isSmall = value - this.cash.value <= 1;
         this.cash.value = value;
         this.cash.textObject.setText(('' + this.cash.value).padStart(6, '0'));
+        if (added) {
+            this.coinGroup.add(new Coin(this, x, y, isSmall));
+        }
     }
 
     createHUD() {
@@ -248,7 +244,10 @@ class GameScene extends Phaser.Scene {
                 {iconFrame: 10 + 7 * 13, text: 'DAMAGE 5', effect: s => s.damageFactor = 6, cost: 4000},
                 {iconFrame: 12 + 7 * 13, text: 'DAMAGE 6', effect: s => s.damageFactor = 8, cost: 6000}
             ],
-            [{iconFrame: 10 + 9 * 13, text: 'ATTK SPD 1', effect: s => s.attackSpeed = 1.5, cost: 800}]
+            [
+                {iconFrame: 10 + 9 * 13, text: 'ATTK SPD 1', effect: s => s.attackSpeed = 1.5, cost: 800},
+                {iconFrame: 10 + 10 * 13, text: 'ATTK SPD 2', effect: s => s.attackSpeed = 3, cost: 2000}
+            ]
         ]));
 
         this.input.on('pointerdown', (event, gameObjects) => {

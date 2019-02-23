@@ -58,6 +58,9 @@ export default class Girl extends Phaser.GameObjects.Sprite {
                 this.alpha = 1;
             }
         }
+        if (this.scene.attractMode) {
+            return;
+        }
 
         let input = {
             left: false,
@@ -149,7 +152,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         const healValue = HEAL_RATE;
         this.health.value += healValue;
         this.healCooldown = HEAL_COOLDOWN / this.scene.healFactor;
-        this.scene.setCash(this.scene.cash.value + healValue);
+        this.scene.setCash(this.scene.cash.value + healValue, this.x, this.y);
     }
 
     hurtBy(enemy) {
