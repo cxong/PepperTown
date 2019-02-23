@@ -46,12 +46,10 @@ export default class Girl extends Phaser.GameObjects.Sprite {
 
     update(keys, time, delta) {
         this.depth = this.y;
-        this.fireCoolDown -= delta;
+        this.fireCoolDown -= delta * this.scene.attackSpeed;
         this.healCooldown -= delta;
 
         this.health.bar.update();
-
-        //this.scene.physics.world.collide(this, this.scene.groundLayer, this.scene.tileCollision);
 
         if (this.wasHurt > 0) {
             this.wasHurt -= delta;

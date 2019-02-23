@@ -90,6 +90,7 @@ class GameScene extends Phaser.Scene {
         this.healFactor = 1;
         this.damageFactor = 1;
         this.returnSpeed = 1;
+        this.attackSpeed = 1;
     }
 
     update(time, delta) {
@@ -207,7 +208,7 @@ class GameScene extends Phaser.Scene {
         this.shops = this.add.group();
 
         this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', [
-            {iconFrame: 9 + 12 * 13, text: 'FAST RETURN', effect: s => s.returnSpeed = 10, cost: 1500}
+            {iconFrame: 9 + 12 * 13, text: 'PORTAL', effect: s => s.returnSpeed = 10, cost: 1500}
         ]));
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
             {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2, cost: 500}
@@ -216,7 +217,8 @@ class GameScene extends Phaser.Scene {
             {iconFrame: 1 + 13 * 13, text: 'HERBS 1', effect: s => s.healFactor = 2, cost: 200}
         ]));
         this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP', [
-            {iconFrame: 0 + 7 * 13, text: 'SWORD 1', effect: s => s.damageFactor = 2, cost: 1000}
+            {iconFrame: 0 + 7 * 13, text: 'SWORD 1', effect: s => s.damageFactor = 2, cost: 1000},
+            {iconFrame: 10 + 9 * 13, text: 'GLOVES 1', effect: s => s.attackSpeed = 1.5, cost: 400}
         ]));
 
         this.input.on('pointerdown', (event, gameObjects) => {
