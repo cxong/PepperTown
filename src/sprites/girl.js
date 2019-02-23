@@ -4,6 +4,7 @@ const SPEED = 50;
 const START_X = 16 * 6;
 const WAS_HURT = 1000;
 const FIRE_COOLDOWN = 500;
+const HEAL_RATE = 2;
 
 export default class Girl extends Phaser.GameObjects.Sprite {
     constructor(config) {
@@ -82,6 +83,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
             case 'resting':
                 if (this.health.value < this.health.max) {
                     this.dir = 'down';
+                    this.health.value += HEAL_RATE * delta / 1000;
                 } else {
                     this.ai.state = 'running';
                 }
