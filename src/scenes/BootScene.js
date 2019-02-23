@@ -55,6 +55,14 @@ class BootScene extends Phaser.Scene {
             frameWidth: 16,
             frameHeight: 16
         });
+        this.load.spritesheet('button', 'assets/images/button.png', {
+            frameWidth: 64,
+            frameHeight: 16
+        });
+        this.load.spritesheet('icons', 'assets/images/roguelikeitems.png', {
+            frameWidth: 16,
+            frameHeight: 16
+        });
 
         this.load.image('bar-back', 'assets/images/bar-back.png');
         this.load.image('bar-front', 'assets/images/bar-front.png');

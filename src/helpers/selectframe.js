@@ -4,7 +4,7 @@ const ALPHA_PERIOD = 500;
 const ALPHA_MIN = 0.2;
 
 export default class SelectFrame extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, width, height, portrait, title) {
+    constructor(scene, x, y, width, height, portrait, title, buttons) {
         super(scene, x, y, 'select-frame');
         scene.add.existing(this);
 
@@ -14,7 +14,7 @@ export default class SelectFrame extends Phaser.GameObjects.Sprite {
         this.alphaCounter = 0;
         
         this.setInteractive({ useHandCursor: true });
-        this.dialog = new Dialog(scene, 32, 32, 144, 176, portrait, title, []);
+        this.dialog = new Dialog(scene, 32, 32, 144, 176, portrait, title, buttons);
     }
 
     update(delta) {

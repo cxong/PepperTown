@@ -31,6 +31,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         this.ai = {
             state: 'running'
         };
+        this.scene = config.scene;
     }
 
     animPlay(anim) {
@@ -108,7 +109,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
 
         this.body.setVelocityX(0);
         this.body.setVelocityY(0);
-        const speed = SPEED * (this.ai.state === 'returning' ? RETURN_SPEED_MULT : 1);
+        const speed = SPEED * (this.ai.state === 'returning' ? RETURN_SPEED_MULT : 1) * this.scene.speedMultiplier;
         if (input.left) {
             this.body.setVelocityX(-speed);
             this.dir = 'left';

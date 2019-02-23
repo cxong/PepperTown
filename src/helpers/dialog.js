@@ -1,3 +1,5 @@
+import BuyButton from "./buybutton";
+
 export default class Dialog extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, width, height, portrait, title, buttons) {
         super(scene, x, y, 'dialog-back');
@@ -14,6 +16,9 @@ export default class Dialog extends Phaser.GameObjects.Sprite {
         this.elements = scene.add.group();
         this.elements.add(scene.add.bitmapText(x + 16, y + 16, 'font', title, 8));
         this.elements.add(scene.add.sprite(x + width - 42, y + height - 47, portrait));
+        buttons.forEach((button, index) => {
+            this.elements.add(new BuyButton(scene, this.elements, x + 16, y + 32 + index * 24, button));
+        });
         this.hide();
     }
 

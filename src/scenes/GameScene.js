@@ -3,6 +3,7 @@ import Slime from '../sprites/slime';
 import Fire from '../sprites/Fire';
 import SelectFrame from '../helpers/selectframe';
 import Dialog from '../helpers/dialog';
+import BuyButton from '../helpers/buybutton';
 
 const CAMERA_PAN = 10;
 const TOTAL_SLIMES = 5000;  // must kill this many to end
@@ -83,6 +84,9 @@ class GameScene extends Phaser.Scene {
             maxSize: 10,
             runChildUpdate: false // Due to https://github.com/photonstorm/phaser/issues/3724
         });
+
+        // Global effects
+        this.speedMultiplier = 1;
     }
 
     update(time, delta) {
@@ -196,10 +200,12 @@ class GameScene extends Phaser.Scene {
         // Add selection frames for the shops
         this.shops = this.add.group();
 
-        this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP'));
-        this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP'));
-        this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP'));
-        this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP'));
+        this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', []));
+        this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
+            {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2}
+        ]));
+        this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP', []));
+        this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP', []));
 
         this.input.on('pointerdown', (event, gameObjects) => {
             let clickedDialog = false;
@@ -207,7 +213,10 @@ class GameScene extends Phaser.Scene {
             if (gameObjects.length > 0) {
                 if (gameObjects[0] instanceof SelectFrame) {
                     selectFrame = gameObjects[0];
-                } else if (gameObjects[0] == this.dialog) {
+                } else if (gameObjects[0] instanceof BuyButton) {
+                    clickedDialog = true;
+                    gameObjects[0].onClick(this);
+                } else {
                     clickedDialog = true;
                 }
             }
