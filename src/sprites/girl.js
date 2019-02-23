@@ -162,6 +162,9 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         if (this.wasHurt < 1) {
             this.health.value -= 1 * this.scene.defenseFactor;
             this.wasHurt = WAS_HURT;
+            const sound = this.scene.sound.add('hit');
+            sound.play();
+            sound.volume = 0.25;
         }
         this.ai.state = 'fighting';
         this.ai.target = enemy;
