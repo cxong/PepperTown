@@ -47,11 +47,11 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         }
 
         let input = {
-            left: keys.left.isDown || this.scene.touchControls.left,
-            right: keys.right.isDown || this.scene.touchControls.right,
-            up: keys.up.isDown || this.scene.touchControls.up,
-            down: keys.down.isDown || this.scene.touchControls.down,
-            fire: keys.fire.isDown
+            left: false,
+            right: false,
+            up: false,
+            down: false,
+            fire: false
         };
         switch (this.ai.state) {
             case 'running':

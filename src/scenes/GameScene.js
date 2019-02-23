@@ -2,6 +2,8 @@ import Girl from '../sprites/girl';
 import Slime from '../sprites/slime';
 import Fire from '../sprites/Fire';
 
+const CAMERA_PAN = 10;
+
 class GameScene extends Phaser.Scene {
     constructor(test) {
         super({
@@ -133,9 +135,6 @@ class GameScene extends Phaser.Scene {
         // Set bounds for current room
         this.mario.setRoomBounds(this.rooms);
 
-        // The camera should follow Mario
-        this.cameras.main.startFollow(this.mario);
-
         this.cameras.main.roundPixels = true;
 
         this.fireballs = this.add.group({
@@ -159,18 +158,20 @@ class GameScene extends Phaser.Scene {
         if (this.levelTimer.time - this.levelTimer.displayedTime * 1000 < 1000) {
             this.levelTimer.displayedTime = Math.round(this.levelTimer.time / 1000);
             this.levelTimer.textObject.setText(('' + this.levelTimer.displayedTime).padStart(3, '0'));
-            if (this.levelTimer.displayedTime < 50 && !this.levelTimer.hurry) {
-                this.levelTimer.hurry = true;
-                this.music.pause();
-                let sound = this.sound.addAudioSprite('sfx');
-                sound.on('ended', (sound) => {
-                    this.music.seek = 0;
-                    this.music.rate = 1.5;
-                    this.music.resume();
-                    sound.destroy();
-                });
-                sound.play('smb_warning');
-            }
+        }
+
+        let input = {
+            left: this.keys.left.isDown,
+            right: this.keys.right.isDown,
+            up: this.keys.up.isDown,
+            down: this.keys.down.isDown,
+            fire: this.keys.fire.isDown
+        };
+        if (input.left) {
+            this.cameras.main.x += CAMERA_PAN;
+        }
+        if (input.right) {
+            this.cameras.main.x -= CAMERA_PAN;
         }
 
         this.mario.update(this.keys, time, delta);
