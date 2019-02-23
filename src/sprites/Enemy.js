@@ -2,6 +2,7 @@
 Generic enemy class that extends Phaser sprites.
 Classes for enemy types extend this class.
 */
+var DETECTION_DISTANCE = 50;
 
 export default class Enemy extends Phaser.GameObjects.Sprite {
     constructor(config) {
@@ -14,10 +15,11 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         this.body.setVelocity(0, 0).setBounce(0, 0).setCollideWorldBounds(false);
         this.body.allowGravity = false;
 
-        // know about Mario
-        this.mario = this.scene.mario;
-
         this.body.setSize(16, 16);
+
+        this.ai = {
+            state: 'idle'
+        };
     }
 
     activated() {
@@ -34,8 +36,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     hurtPC(enemy, pc) {
         if (pc.hurtBy(enemy)) {
-            enemy.die(enemy, pc);
-            enemy.scene.updateScore(100);
+            enemy.die(enemy);
             enemy.scene.sound.playAudioSprite('sfx', 'smb_stomp');
         }
     }
@@ -45,17 +46,20 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         if (!this.alive) {
             return;
         }
-        this.body.velocity.x = 0;
-        this.body.velocity.y = -200;
-        this.alive = false;
-        this.flipY = true;
+        this.die(this);
         this.scene.sound.playAudioSprite('sfx', 'smb_stomp');
-        this.scene.updateScore(100);
     }
 
     kill() {
         // Forget about this enemy
         this.scene.enemyGroup.remove(this);
         this.destroy();
+    }
+
+    findPlayer() {
+        if (Phaser.Math.Distance.Between(this.scene.mario.x, this.scene.mario.y, this.x, this.y) < DETECTION_DISTANCE) {
+            return this.scene.mario;
+        }
+        return null;
     }
 }
