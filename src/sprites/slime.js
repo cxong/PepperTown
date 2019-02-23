@@ -42,7 +42,7 @@ export default class Slime extends Enemy {
                 }
                 break;
             case 'fighting':
-                if (!this.ai.target || this.ai.target.health.value < 1) {
+                if (!this.ai.target || this.ai.target.health.value <= 0) {
                     this.ai.state = 'idle';
                 } else {
                     let vel = new Phaser.Geom.Point(this.ai.target.body.x - this.body.x, this.ai.target.body.y - this.body.y);
@@ -84,7 +84,7 @@ export default class Slime extends Enemy {
 
     die(enemy, damage) {
         this.health.value -= damage;
-        if (this.health.value < 1) {
+        if (this.health.value <= 0) {
             this.alive = false;
             enemy.scene.onKill();
             enemy.alpha = 0.2;

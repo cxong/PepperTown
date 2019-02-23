@@ -69,7 +69,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
             if (distance > DETECTION_DISTANCE) {
                 return;
             }
-            if (girl.health.value < 1) {
+            if (girl.health.value <= 0) {
                 return;
             }
             if (closestGirl === null || minDistance > distance) {

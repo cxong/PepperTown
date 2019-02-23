@@ -69,7 +69,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         };
         switch (this.ai.state) {
             case 'running':
-                if (this.health.value < 1 || this.x > 30 * 16) {
+                if (this.health.value <= 0 || this.x > 30 * 16) {
                     this.ai.state = 'returning';
                 } else {
                     input.right = true;
@@ -83,7 +83,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
                 }
                 break;
             case 'fighting':
-                if (this.health.value < 1) {
+                if (this.health.value <= 0) {
                     this.ai.state = 'returning';
                 } else if (!this.ai.target || !this.ai.target.active) {
                     this.ai.state = 'running';
@@ -151,11 +151,11 @@ export default class Girl extends Phaser.GameObjects.Sprite {
     }
 
     hurtBy(enemy) {
-        if (this.health.value < 1) {
+        if (this.health.value <= 0) {
             return false;
         }
         if (this.wasHurt < 1) {
-            this.health.value--;
+            this.health.value -= 1 * this.scene.defenseFactor;;
             this.wasHurt = WAS_HURT;
         }
         this.ai.state = 'fighting';
