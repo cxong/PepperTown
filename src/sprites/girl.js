@@ -141,17 +141,4 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         }
         return false;
     }
-
-    setRoomBounds(rooms) {
-        rooms.forEach(
-            (room) => {
-                if (this.x >= room.x && this.x <= (room.x + room.width)) {
-                    let cam = this.scene.cameras.main;
-                    let layer = this.scene.groundLayer;
-                    cam.setBounds(room.x, 0, room.width * layer.scaleX, layer.height * layer.scaleY);
-                    this.scene.cameras.main.setBackgroundColor(room.sky);
-                }
-            }
-        );
-    }
 }

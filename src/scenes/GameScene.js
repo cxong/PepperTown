@@ -15,9 +15,6 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-        // Places to warp to (from pipes). These coordinates is used also to define current room (see below)
-        this.destinations = {};
-
         // Array of rooms to keep bounds within to avoid the need of multiple tilemaps per level.
         // It might be a singe screen room like when going down a pipe or a sidescrolling level.
         // It's defined as objects in Tiled.
@@ -51,9 +48,6 @@ class GameScene extends Phaser.Scene {
         // This group contains all enemies for collision and calling update-methods
         this.enemyGroup = this.add.group();
 
-        // A group powerUps to update
-        this.powerUps = this.add.group();
-
         // Populate enemyGroup, powerUps, pipes and destinations from object layers
         this.parseObjectLayers();
 
@@ -66,56 +60,6 @@ class GameScene extends Phaser.Scene {
         };
 
         this.createHUD();
-
-        // Touch controls is really just a quick hack to try out performance on mobiles,
-        // It's not itended as a suggestion on how to do it in a real game.
-        let jumpButton = this.add.sprite(350, 180);
-        jumpButton.play('button');
-        let dpad = this.add.sprite(20, 170);
-        dpad.play('dpad');
-        this.touchControls = {
-            dpad: dpad,
-            abutton: jumpButton,
-            left: false,
-            right: false,
-            down: false,
-            jump: false,
-            visible: false
-        };
-        jumpButton.setScrollFactor(0, 0);
-        jumpButton.alpha = 0;
-        jumpButton.setInteractive();
-        jumpButton.on('pointerdown', (pointer) => {
-            this.touchControls.jump = true;
-        });
-        jumpButton.on('pointerup', (pointer) => {
-            this.touchControls.jump = false;
-        });
-        dpad.setScrollFactor(0, 0);
-        dpad.alpha = 0;
-        dpad.setInteractive();
-        dpad.on('pointerdown', (pointer) => {
-            let x = dpad.x + dpad.width - pointer.x;
-            let y = dpad.y + dpad.height - pointer.y;
-            console.log(x, y);
-            if (y > 0 || Math.abs(x) > -y) {
-                if (x > 0) {
-                    console.log('going left');
-                    this.touchControls.left = true;
-                } else {
-                    console.log('going right');
-                    this.touchControls.right = true;
-                }
-            } else {
-                this.touchControls.down = true;
-            }
-        });
-        dpad.on('pointerup', (pointer) => {
-            this.touchControls.left = false;
-            this.touchControls.right = false;
-            this.touchControls.down = false;
-        });
-        window.toggleTouch = this.toggleTouch.bind(this);
 
         // Mute music while in attract mode
         if (this.attractMode) {
@@ -131,9 +75,6 @@ class GameScene extends Phaser.Scene {
             x: 16 * 6,
             y: this.sys.game.config.height - 48 - 48
         });
-
-        // Set bounds for current room
-        this.mario.setRoomBounds(this.rooms);
 
         this.cameras.main.roundPixels = true;
 
@@ -168,23 +109,16 @@ class GameScene extends Phaser.Scene {
             fire: this.keys.fire.isDown
         };
         if (input.left) {
-            this.cameras.main.x += CAMERA_PAN;
+            this.cameras.main.scrollX -= CAMERA_PAN;
         }
         if (input.right) {
-            this.cameras.main.x -= CAMERA_PAN;
+            this.cameras.main.scrollX += CAMERA_PAN;
         }
 
         this.mario.update(this.keys, time, delta);
 
         // Run the update method of all enemies
         this.enemyGroup.children.entries.forEach(
-            (sprite) => {
-                sprite.update(time, delta);
-            }
-        );
-
-        // Run the update method of non-enemy sprites
-        this.powerUps.children.entries.forEach(
             (sprite) => {
                 sprite.update(time, delta);
             }
@@ -216,17 +150,6 @@ class GameScene extends Phaser.Scene {
     updateScore(score) {
         this.score.pts += score;
         this.score.textObject.setText(('' + this.score.pts).padStart(6, '0'));
-    }
-
-    toggleTouch() {
-        this.touchControls.visible = !this.touchControls.visible;
-        if (this.touchControls.visible) {
-            this.touchControls.dpad.alpha = 0;
-            this.touchControls.abutton.alpha = 0;
-        } else {
-            this.touchControls.dpad.alpha = 0.5;
-            this.touchControls.abutton.alpha = 0.5;
-        }
     }
 
     parseObjectLayers() {
@@ -332,7 +255,7 @@ class GameScene extends Phaser.Scene {
         // Never called since 3.10 update (I called it from create before). If Everything is fine, I'll remove this method.
         // Scenes isn't properly destroyed yet.
         let ignore = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics'];
-        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'destinations', 'rooms', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'powerUps', 'keys', 'levelTimer', 'score', 'touchControls'];
+        let whatThisHad = ['sys', 'anims', 'cache', 'registry', 'sound', 'textures', 'events', 'cameras', 'make', 'add', 'scene', 'children', 'cameras3d', 'time', 'data', 'input', 'load', 'tweens', 'lights', 'physics', 'rooms', 'music', 'map', 'tileset', 'groundLayer', 'mario', 'enemyGroup', 'keys', 'levelTimer', 'score', 'touchControls'];
         whatThisHad.forEach(key => {
             if (ignore.indexOf(key) === -1 && this[key]) {
                 switch (key) {
