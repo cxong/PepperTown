@@ -4,7 +4,7 @@ export default class Slime extends Enemy {
     constructor(config) {
         super(config);
         this.body.setVelocity(0, 0).setBounce(0, 0).setCollideWorldBounds(false);
-        this.anims.play('slime/standdown');
+        this.anims.play('slime/rundown');
         this.killAt = 0;
     }
 

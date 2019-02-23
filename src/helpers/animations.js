@@ -32,7 +32,7 @@ export default function makeAnimations(scene) {
                 frames: scene.anims.generateFrameNames('characters', {
                     frames: [0, 1, 2, 1].map(x => x + (index + CHARACTERS_STRIDE_Y * 1) * CHARACTERS_STRIDE)
                 }),
-                frameRate: 10,
+                frameRate: 5,
                 repeat: -1,
                 repeatDelay: 0
             };
