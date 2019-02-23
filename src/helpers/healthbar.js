@@ -13,7 +13,7 @@ export default class HealthBar extends Phaser.GameObjects.Sprite {
         this.x = this.owner.x;
         this.y = this.owner.y - 12;
         const scale = this.owner.health.value / this.owner.health.max;
-        if (scale == 1) {
+        if (scale >= 1) {
             this.alpha = 0;
             this.barFront.alpha = 0;
         } else {

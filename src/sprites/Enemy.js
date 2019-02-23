@@ -1,7 +1,5 @@
-/*
-Generic enemy class that extends Phaser sprites.
-Classes for enemy types extend this class.
-*/
+import HealthBar from '../helpers/healthbar.js';
+
 var DETECTION_DISTANCE = 50;
 
 export default class Enemy extends Phaser.GameObjects.Sprite {
@@ -10,6 +8,11 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         config.scene.physics.world.enable(this);
         config.scene.add.existing(this);
         this.alive = true;
+        this.health = {
+            max: 2,
+            value: 2,
+            bar: new HealthBar(config.scene, this)
+        };
 
         // start still and wait until needed
         this.body.setVelocity(0, 0).setBounce(0, 0).setCollideWorldBounds(false);
@@ -36,7 +39,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     hurtPC(enemy, pc) {
         if (pc.hurtBy(enemy)) {
-            enemy.die(enemy);
+            enemy.die(enemy, 1);
             enemy.scene.sound.playAudioSprite('sfx', 'smb_stomp');
         }
     }
@@ -54,6 +57,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         // Forget about this enemy
         this.scene.enemyGroup.remove(this);
         this.destroy();
+        this.health.bar.destroy();
     }
 
     findPlayer() {

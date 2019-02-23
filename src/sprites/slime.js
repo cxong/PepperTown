@@ -11,6 +11,8 @@ export default class Slime extends Enemy {
     }
 
     update(time, delta) {
+        this.health.bar.update();
+
         if (this.killAt !== 0) {
             // The killtimer is set, keep the flat Goomba then kill it for good.
             this.body.setVelocityX(0);
@@ -74,10 +76,13 @@ export default class Slime extends Enemy {
         }
     }
 
-    die(enemy) {
-        this.alive = false;
-        enemy.scene.updateScore(100);
-        enemy.alpha = 0.2;
-        enemy.killAt = 500;
+    die(enemy, damage) {
+        this.health.value -= damage;
+        if (this.health.value < 1) {
+            this.alive = false;
+            enemy.scene.updateScore(100);
+            enemy.alpha = 0.2;
+            enemy.killAt = 500;
+        }
     }
 }
