@@ -2,6 +2,7 @@ import Girl from '../sprites/girl';
 import Slime from '../sprites/slime';
 import Fire from '../sprites/Fire';
 import SelectFrame from '../helpers/selectframe';
+import Dialog from '../helpers/dialog';
 
 const CAMERA_PAN = 10;
 const TOTAL_SLIMES = 5000;  // must kill this many to end
@@ -194,13 +195,27 @@ class GameScene extends Phaser.Scene {
 
         // Add selection frames for the shops
         this.shops = this.add.group();
-        this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16));
-        this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16));
-        this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16));
-        this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16));
+        this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'MAGIC SHOP'));
+        this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'ARMOR SHOP'));
+        this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'ITEM SHOP'));
+        this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'WEAPON SHOP'));
 
         this.input.on('pointerdown', (event, gameObjects) => {
-            console.log('down', event, gameObjects);
+            let clickedDialog = false;
+            let selectFrame = null;
+            if (gameObjects.length > 0) {
+                if (gameObjects[0] instanceof SelectFrame) {
+                    selectFrame = gameObjects[0];
+                } else if (gameObjects[0] == this.dialog) {
+                    clickedDialog = true;
+                }
+            }
+            if (!clickedDialog) {
+                this.hideDialog();
+            }
+            if (selectFrame) {
+                selectFrame.onClick(this);
+            }
         });
         this.input.on('pointerover', (event, gameObjects) => {
             gameObjects[0].hovered = true;
@@ -208,6 +223,13 @@ class GameScene extends Phaser.Scene {
         this.input.on('pointerout', (event, gameObjects) => {
             gameObjects[0].hovered = false;
         });
+    }
+
+    hideDialog() {
+        if (this.dialog) {
+            this.dialog.hide();
+            this.dialog = null;
+        }
     }
 }
 
