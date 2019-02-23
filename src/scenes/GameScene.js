@@ -106,12 +106,14 @@ class GameScene extends Phaser.Scene {
 
         // Spawn slimes
         const idealSlimes = Math.min(Math.round(this.enemiesKilled * 0.02) + 20, this.left.pts);
+        const slimeHP = this.enemiesKilled * 0.007 + 2;
         while (this.enemyGroup.getLength() < idealSlimes) {
             this.enemyGroup.add(new Slime({
                 scene: this,
                 key: 'characters',
                 x: (Math.random() * 20 + 10) * 16,
-                y: (Math.random() * 9 + 4) * 16
+                y: (Math.random() * 9 + 4) * 16,
+                hp: slimeHP
             }));
         }
 
@@ -167,10 +169,10 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    onKill() {
+    onKill(hp) {
         this.setLeft(this.left.pts - 1);
         this.enemiesKilled++;
-        this.setCash(this.cash.value + 10);
+        this.setCash(this.cash.value + Math.round(hp * 5));
     }
 
     setLeft(left) {
@@ -209,7 +211,7 @@ class GameScene extends Phaser.Scene {
         this.shops = this.add.group();
 
         this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', [
-            [{iconFrame: 9 + 12 * 13, text: 'PORTAL', effect: s => s.returnSpeed = 10, cost: 1500}],
+            [{iconFrame: 9 + 12 * 13, text: 'PORTAL', effect: s => s.returnSpeed = 8, cost: 1500}],
             [{iconFrame: 2 + 1 * 13, text: 'REGEN RING', effect: s => s.regen = 0.5, cost: 2000}]
         ]));
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
@@ -238,8 +240,15 @@ class GameScene extends Phaser.Scene {
             ]
         ]));
         this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP', [
-            [{iconFrame: 0 + 7 * 13, text: 'SWORD 1', effect: s => s.damageFactor = 2, cost: 1000}],
-            [{iconFrame: 10 + 9 * 13, text: 'GLOVES 1', effect: s => s.attackSpeed = 1.5, cost: 800}]
+            [
+                {iconFrame: 0 + 7 * 13, text: 'DAMAGE 1', effect: s => s.damageFactor = 2, cost: 1000},
+                {iconFrame: 1 + 7 * 13, text: 'DAMAGE 2', effect: s => s.damageFactor = 3, cost: 1500},
+                {iconFrame: 2 + 7 * 13, text: 'DAMAGE 3', effect: s => s.damageFactor = 4, cost: 2000},
+                {iconFrame: 3 + 7 * 13, text: 'DAMAGE 4', effect: s => s.damageFactor = 5, cost: 2700},
+                {iconFrame: 10 + 7 * 13, text: 'DAMAGE 5', effect: s => s.damageFactor = 6, cost: 4000},
+                {iconFrame: 12 + 7 * 13, text: 'DAMAGE 6', effect: s => s.damageFactor = 8, cost: 6000}
+            ],
+            [{iconFrame: 10 + 9 * 13, text: 'ATTK SPD 1', effect: s => s.attackSpeed = 1.5, cost: 800}]
         ]));
 
         this.input.on('pointerdown', (event, gameObjects) => {

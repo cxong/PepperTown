@@ -9,8 +9,8 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         config.scene.add.existing(this);
         this.alive = true;
         this.health = {
-            max: 2,
-            value: 2,
+            max: config.hp,
+            value: config.hp,
             bar: new HealthBar(config.scene, this)
         };
 
