@@ -110,7 +110,7 @@ class GameScene extends Phaser.Scene {
                 scene: this,
                 key: 'characters',
                 x: (Math.random() * 20 + 10) * 16,
-                y: (Math.random() * 10 + 2) * 16
+                y: (Math.random() * 9 + 4) * 16
             }));
         }
 
@@ -208,18 +208,24 @@ class GameScene extends Phaser.Scene {
         this.shops = this.add.group();
 
         this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', [
-            {iconFrame: 9 + 12 * 13, text: 'PORTAL', effect: s => s.returnSpeed = 10, cost: 1500}
+            [{iconFrame: 9 + 12 * 13, text: 'PORTAL', effect: s => s.returnSpeed = 10, cost: 1500}]
         ]));
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
-            {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2, cost: 500},
-            {iconFrame: 7 + 11 * 13, text: 'SHIELD 1', effect: s => s.defenseFactor = 0.8, cost: 400}
+            [
+                {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2, cost: 500},
+                {iconFrame: 6 + 10 * 13, text: 'SPEED 2', effect: s => s.speedMultiplier = 1.4, cost: 700},
+                {iconFrame: 5 + 10 * 13, text: 'SPEED 3', effect: s => s.speedMultiplier = 1.7, cost: 1000},
+                {iconFrame: 9 + 10 * 13, text: 'SPEED 4', effect: s => s.speedMultiplier = 2.5, cost: 1500},
+                {iconFrame: 8 + 10 * 13, text: 'SPEED 5', effect: s => s.speedMultiplier = 4, cost: 2500}
+            ],
+            [{iconFrame: 7 + 11 * 13, text: 'SHIELD 1', effect: s => s.defenseFactor = 0.8, cost: 400}]
         ]));
         this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP', [
-            {iconFrame: 1 + 13 * 13, text: 'HERBS 1', effect: s => s.healFactor = 2, cost: 200}
+            [{iconFrame: 1 + 13 * 13, text: 'HERBS 1', effect: s => s.healFactor = 2, cost: 200}]
         ]));
         this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP', [
-            {iconFrame: 0 + 7 * 13, text: 'SWORD 1', effect: s => s.damageFactor = 2, cost: 1000},
-            {iconFrame: 10 + 9 * 13, text: 'GLOVES 1', effect: s => s.attackSpeed = 1.5, cost: 800}
+            [{iconFrame: 0 + 7 * 13, text: 'SWORD 1', effect: s => s.damageFactor = 2, cost: 1000}],
+            [{iconFrame: 10 + 9 * 13, text: 'GLOVES 1', effect: s => s.attackSpeed = 1.5, cost: 800}]
         ]));
 
         this.input.on('pointerdown', (event, gameObjects) => {
