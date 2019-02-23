@@ -34,6 +34,7 @@ export default class Slime extends Enemy {
                     this.ai.target = target;
                 } else {
                     this.body.setVelocity(0, 0);
+                    this.animPlay('slime/rundown');
                 }
                 break;
             case 'fighting':
@@ -46,12 +47,31 @@ export default class Slime extends Enemy {
                     } else {
                         vel = Phaser.Geom.Point.SetMagnitude(vel, SPEED);
                         this.body.setVelocity(vel.x, vel.y);
+                        if (Math.abs(vel.x) > Math.abs(vel.y)) {
+                            if (vel.x > 0) {
+                                this.animPlay('slime/runright');
+                            } else {
+                                this.animPlay('slime/runleft');
+                            }
+                        } else {
+                            if (vel.y > 0) {
+                                this.animPlay('slime/rundown');
+                            } else {
+                                this.animPlay('slime/runup');
+                            }
+                        }
                     }
                 }
                 break;
         }
 
         this.scene.physics.world.overlap(this, this.scene.mario, this.hurtPC);
+    }
+
+    animPlay(key) {
+        if (this.anims.currentAnim.key !== key) {
+            this.anims.play(key);
+        }
     }
 
     die(enemy) {
