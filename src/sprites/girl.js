@@ -1,4 +1,6 @@
 var SPEED = 50;
+var START_X = 16 * 6;
+var WAS_HURT = 1000;
 
 export default class Girl extends Phaser.GameObjects.Sprite {
     constructor(config) {
@@ -11,28 +13,28 @@ export default class Girl extends Phaser.GameObjects.Sprite {
 
         this.wasHurt = -1;
         this.flashToggle = false;
-        this.star = {
-            active: false,
-            timer: -1,
-            step: 0
-        };
         this.anims.play('stand' + this.dir);
-        this.alive = true;
+        this.health = {
+            max: 10,
+            value: 10
+        };
         this.type = 'mario';
-        this.jumpTimer = 0;
-        this.jumping = false;
         this.fireCoolDown = 0;
+
+        this.ai = {
+            state: 'running'
+        };
     }
 
     update(keys, time, delta) {
         // Don't do updates while dead
-        if (!this.alive) {
+        if (this.health.value < 1) {
             return;
         }
 
         this.fireCoolDown -= delta;
 
-        this.scene.physics.world.collide(this, this.scene.groundLayer, this.scene.tileCollision);
+        //this.scene.physics.world.collide(this, this.scene.groundLayer, this.scene.tileCollision);
 
         if (this.wasHurt > 0) {
             this.wasHurt -= delta;
@@ -43,17 +45,6 @@ export default class Girl extends Phaser.GameObjects.Sprite {
             }
         }
 
-        if (this.star.active) {
-            if (this.star.timer < 0) {
-                this.star.active = false;
-                this.tint = 0xFFFFFF;
-            } else {
-                this.star.timer -= delta;
-                this.star.step = (this.star.step === 5) ? 0 : this.star.step + 1;
-                this.tint = [0xFFFFFF, 0xFF0000, 0xFFFFFF, 0x00FF00, 0xFFFFFF, 0x0000FF][this.star.step];
-            }
-        }
-
         let input = {
             left: keys.left.isDown || this.scene.touchControls.left,
             right: keys.right.isDown || this.scene.touchControls.right,
@@ -61,8 +52,39 @@ export default class Girl extends Phaser.GameObjects.Sprite {
             down: keys.down.isDown || this.scene.touchControls.down,
             fire: keys.fire.isDown
         };
-
-        this.jumpTimer -= delta;
+        switch (this.ai.state) {
+            case 'running':
+                // TODO: detect enemies, fighting
+                if (this.health.value < 1) {
+                    this.ai.state = 'returning';
+                } else {
+                    input.right = true;
+                }
+                break;
+            case 'returning':
+                if (this.x > START_X) {
+                    input.left = true;
+                } else {
+                    this.ai.state = 'resting';
+                }
+                break;
+            case 'fighting':
+                if (this.health.value < 1) {
+                    this.ai.state = 'returning';
+                } else {
+                    // TODO: face target
+                    input.fire = true;
+                    // TODO: no target, go to running
+                }
+                break;
+            case 'resting':
+                if (this.health.value < this.health.max) {
+                    this.dir = 'down';
+                } else {
+                    this.ai.state = 'running';
+                }
+                break;
+        }
 
         this.body.setVelocityX(0);
         this.body.setVelocityY(0);
@@ -99,31 +121,22 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         this.physicsCheck = true;
     }
 
-    enemyBounce(enemy) {
-        // Force Mario y-position up a bit (on top of the enemy) to avoid getting killed
-        // by neigbouring enemy before being able to bounce
-        this.body.y = enemy.body.y - this.body.height;
-        // TODO: if jump-key is down, add a boost value to jump-velocity to use and init jump for controls to handle.
-        this.body.setVelocityY(-150);
-    }
-
     hurtBy(enemy) {
-        if (!this.alive) {
+        if (!this.alive.value < 1) {
             return;
         }
-        if (this.star.active) {
-            enemy.starKilled(enemy, this);
-        } else if (this.wasHurt < 1) {
-            this.die();
+        if (this.wasHurt < 1) {
+            this.health.value--;
+            if (this.health.value < 1) {
+                this.die();
+            } else {
+                this.wasHurt = WAS_HURT;
+            }
         }
     }
 
     die() {
-        this.scene.music.pause();
-        this.play('death');
         this.scene.sound.playAudioSprite('sfx', 'smb_mariodie');
-        this.body.setAcceleration(0);
-        this.alive = false;
     }
 
     setRoomBounds(rooms) {

@@ -172,13 +172,6 @@ class GameScene extends Phaser.Scene {
                 });
                 sound.play('smb_warning');
             }
-            if (this.levelTimer.displayedTime < 1) {
-                this.mario.die();
-                this.levelTimer.hurry = false;
-                this.music.rate = 1;
-                this.levelTimer.time = 150 * 1000;
-                this.levelTimer.displayedTime = 255;
-            }
         }
 
         this.mario.update(this.keys, time, delta);
