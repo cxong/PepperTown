@@ -5,7 +5,8 @@ const RETURN_SPEED_MULT = 2;
 const START_X = 16 * 6;
 const WAS_HURT = 1000;
 const FIRE_COOLDOWN = 500;
-const HEAL_RATE = 2;
+const HEAL_COOLDOWN = 500;
+const HEAL_RATE = 1;
 
 export default class Girl extends Phaser.GameObjects.Sprite {
     constructor(config) {
@@ -27,6 +28,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         };
         this.type = 'mario';
         this.fireCoolDown = 0;
+        this.healCooldown = 0;
 
         this.ai = {
             state: 'running'
@@ -45,6 +47,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
     update(keys, time, delta) {
         this.depth = this.y;
         this.fireCoolDown -= delta;
+        this.healCooldown -= delta;
 
         this.health.bar.update();
 
@@ -100,7 +103,9 @@ export default class Girl extends Phaser.GameObjects.Sprite {
             case 'resting':
                 if (this.health.value < this.health.max) {
                     this.dir = 'down';
-                    this.health.value += HEAL_RATE * delta / 1000;
+                    if (this.healCooldown < 1) {
+                        this.onHeal();
+                    }
                 } else {
                     this.ai.state = 'running';
                 }
@@ -138,6 +143,13 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         }
 
         this.physicsCheck = true;
+    }
+
+    onHeal() {
+        const healValue = HEAL_RATE * this.scene.healFactor;
+        this.health.value += healValue;
+        this.healCooldown = HEAL_COOLDOWN;
+        this.scene.setCash(this.scene.cash.value + healValue);
     }
 
     hurtBy(enemy) {

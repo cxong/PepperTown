@@ -87,6 +87,7 @@ class GameScene extends Phaser.Scene {
 
         // Global effects
         this.speedMultiplier = 1;
+        this.healFactor = 1;
     }
 
     update(time, delta) {
@@ -207,7 +208,8 @@ class GameScene extends Phaser.Scene {
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
             {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2, cost: 1000}
         ]));
-        this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP', []));
+        this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP', [
+            {iconFrame: 1 + 13 * 13, text: 'HERBS 1', effect: s => s.healFactor = 2, cost: 200}]));
         this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP', []));
 
         this.input.on('pointerdown', (event, gameObjects) => {
