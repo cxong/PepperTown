@@ -85,7 +85,7 @@ export default class Slime extends Enemy {
         this.health.value -= damage;
         if (this.health.value < 1) {
             this.alive = false;
-            enemy.scene.updateScore(100);
+            enemy.scene.onKill();
             enemy.alpha = 0.2;
             enemy.killAt = 500;
         }

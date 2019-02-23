@@ -163,9 +163,10 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    updateScore(score) {
-        this.score.pts += score;
+    onKill() {
+        this.score.pts += 100;
         this.score.textObject.setText(('' + this.score.pts).padStart(6, '0'));
+        this.enemiesKilled++;
     }
 
     createHUD() {

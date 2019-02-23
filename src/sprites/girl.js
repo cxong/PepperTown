@@ -1,6 +1,7 @@
 import HealthBar from '../helpers/healthbar.js';
 
 const SPEED = 50;
+const RETURN_SPEED_MULT = 2;
 const START_X = 16 * 6;
 const WAS_HURT = 1000;
 const FIRE_COOLDOWN = 500;
@@ -65,7 +66,6 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         };
         switch (this.ai.state) {
             case 'running':
-                // TODO: detect enemies, fighting
                 if (this.health.value < 1) {
                     this.ai.state = 'returning';
                 } else {
@@ -85,7 +85,13 @@ export default class Girl extends Phaser.GameObjects.Sprite {
                 } else if (!this.ai.target || !this.ai.target.active) {
                     this.ai.state = 'running';
                 } else {
-                    // TODO: face target
+                    // face target
+                    const vel = new Phaser.Geom.Point(this.ai.target.x - this.x, this.ai.target.y - this.y);
+                    if (Math.abs(vel.x) > Math.abs(vel.y)) {
+                        this.dir = vel.x > 0 ? 'right' : 'left';
+                    } else {
+                        this.dir = vel.y > 0 ? 'down' : 'up';
+                    }
                     input.fire = true;
                 }
                 break;
@@ -101,17 +107,18 @@ export default class Girl extends Phaser.GameObjects.Sprite {
 
         this.body.setVelocityX(0);
         this.body.setVelocityY(0);
+        const speed = SPEED * (this.ai.state === 'returning' ? RETURN_SPEED_MULT : 1);
         if (input.left) {
-            this.body.setVelocityX(-SPEED);
+            this.body.setVelocityX(-speed);
             this.dir = 'left';
         } else if (input.right) {
-            this.body.setVelocityX(SPEED);
+            this.body.setVelocityX(speed);
             this.dir = 'right';
         } else if (input.down) {
-            this.body.setVelocityY(SPEED);
+            this.body.setVelocityY(speed);
             this.dir = 'down';
         } else if (input.up) {
-            this.body.setVelocityY(-SPEED);
+            this.body.setVelocityY(-speed);
             this.dir = 'up';
         }
 
