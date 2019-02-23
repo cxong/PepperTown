@@ -1,13 +1,13 @@
 export default function makeAnimations(scene) {
     let config = {};
 
-    ['pepper', 'coriander'].forEach(girl => {
+    ['pepper', 'coriander', 'saffron', 'shichimi'].forEach(girl => {
         ['up', 'right', 'down', 'left'].forEach(
             (dir, index) => {
                 config = {
                     key: girl + 'run' + dir,
                     frames: scene.anims.generateFrameNames(girl, {
-                        frames: [0, 1, 2, 1].map(x => x + index * 7)
+                        frames: [0, 1, 2, 1].map(x => x + index * 3)
                     }),
                     frameRate: 10,
                     repeat: -1,
@@ -17,8 +17,8 @@ export default function makeAnimations(scene) {
 
                 config.key = girl + 'stand' + dir;
                 config.frames = scene.anims.generateFrameNames(girl, {
-                    start: index * 7 + 1,
-                    end: index * 7 + 1
+                    start: index * 3 + 1,
+                    end: index * 3 + 1
                 });
                 scene.anims.create(config);
             }

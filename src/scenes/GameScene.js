@@ -3,6 +3,7 @@ import Slime from '../sprites/slime';
 import Fire from '../sprites/Fire';
 
 const CAMERA_PAN = 10;
+const TOTAL_SLIMES = 5000;  // must kill this many to end
 
 class GameScene extends Phaser.Scene {
     constructor(test) {
@@ -45,13 +46,11 @@ class GameScene extends Phaser.Scene {
             collide: true
         });
 
-        this.girlGroup = this.add.group();
-
         // This group contains all enemies for collision and calling update-methods
         this.enemyGroup = this.add.group();
+        this.enemiesKilled = 0;
 
-        // Populate enemyGroup, powerUps, pipes and destinations from object layers
-        this.parseObjectLayers();
+        this.girlGroup = this.add.group();
 
         this.keys = {
             fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
@@ -71,18 +70,14 @@ class GameScene extends Phaser.Scene {
         // If the game ended while physics was disabled
         this.physics.world.resume();
 
-        this.girlGroup.add(new Girl({
-            scene: this,
-            key: 'pepper',
-            x: 16 * 6,
-            y: this.sys.game.config.height - 48 - 48
-        }));
-        this.girlGroup.add(new Girl({
-            scene: this,
-            key: 'coriander',
-            x: 16 * 6,
-            y: this.sys.game.config.height - 48 - 48 - 48
-        }));
+        ['pepper', 'coriander', 'saffron', 'shichimi'].forEach((girl, index) => {
+            this.girlGroup.add(new Girl({
+                scene: this,
+                key: girl,
+                x: 16 * 6,
+                y: this.sys.game.config.height * 0.5 + ((index - 2) * 32)
+            }));
+        });
 
         this.cameras.main.roundPixels = true;
 
@@ -107,6 +102,17 @@ class GameScene extends Phaser.Scene {
         if (this.levelTimer.time - this.levelTimer.displayedTime * 1000 < 1000) {
             this.levelTimer.displayedTime = Math.round(this.levelTimer.time / 1000);
             this.levelTimer.textObject.setText(('' + this.levelTimer.displayedTime).padStart(3, '0'));
+        }
+
+        // Spawn slimes
+        const idealSlimes = Math.round(this.enemiesKilled * 0.02) + 20;
+        while (this.enemyGroup.getLength() < idealSlimes) {
+            this.enemyGroup.add(new Slime({
+                scene: this,
+                key: 'characters',
+                x: (Math.random() * 20 + 10) * 16,
+                y: (Math.random() * 10 + 2) * 16
+            }));
         }
 
         let input = {
@@ -160,82 +166,6 @@ class GameScene extends Phaser.Scene {
     updateScore(score) {
         this.score.pts += score;
         this.score.textObject.setText(('' + this.score.pts).padStart(6, '0'));
-    }
-
-    parseObjectLayers() {
-        // The map has one object layer with enemies as stamped tiles,
-        // each tile has properties containing info on what enemy it represents.
-        this.map.getObjectLayer('enemies').objects.forEach(
-            (enemy) => {
-                let enemyObject;
-                const index = enemy.gid - 1 - this.tilesetEnemies.firstgid;
-                const tileProps = this.tilesetEnemies.tileProperties[index];
-                switch (tileProps.name) {
-                    case 'slime':
-                        enemyObject = new Slime({
-                            scene: this,
-                            key: 'characters',
-                            x: enemy.x,
-                            y: enemy.y
-                        });
-                        break;
-                    default:
-                        console.error('Unknown:', tileProps); // eslint-disable-line no-console
-                        break;
-                }
-                this.enemyGroup.add(enemyObject);
-            }
-        );
-
-        // The map has an object layer with 'modifiers' that do 'stuff', see below
-        /*this.map.getObjectLayer('modifiers').objects.forEach((modifier) => {
-            let tile, properties, type;
-
-            // Get property stuff from the tile if present or just from the object layer directly
-            if (typeof modifier.gid !== 'undefined') {
-                properties = this.tileset.tileProperties[modifier.gid - 1];
-                type = properties.type;
-                if (properties.hasOwnProperty('powerUp')) {
-                    type = 'powerUp';
-                }
-            } else {
-                type = modifier.properties.type;
-            }
-
-            switch (type) {
-                case 'powerUp':
-                    // Modifies a questionmark below the modifier to contain something else than the default (coin)
-                    tile = this.groundLayer.getTileAt(modifier.x / 16, modifier.y / 16 - 1);
-                    tile.powerUp = properties.powerUp;
-                    tile.properties.callback = 'questionMark';
-                    if (!tile.collides) {
-                        // Hidden block without a question mark
-                        tile.setCollision(false, false, false, true);
-                    }
-                    break;
-                case 'pipe':
-                    // Adds info on where to go from a pipe under the modifier
-                    tile = this.groundLayer.getTileAt(modifier.x / 16, modifier.y / 16);
-                    tile.properties.dest = parseInt(modifier.properties.goto);
-                    break;
-                case 'dest':
-                    // Adds a destination so that a pipe can find it
-                    this.destinations[modifier.properties.id] = {
-                        x: modifier.x + modifier.width / 2,
-                        top: (modifier.y < 16)
-                    };
-                    break;
-                case 'room':
-                    // Adds a 'room' that is just info on bounds so that we can add sections below pipes
-                    // in an level just using one tilemap.
-                    this.rooms.push({
-                        x: modifier.x,
-                        width: modifier.width,
-                        sky: modifier.properties.sky
-                    });
-                    break;
-            }
-        });*/
     }
 
     createHUD() {

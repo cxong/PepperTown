@@ -1,6 +1,7 @@
 import Enemy from './Enemy';
 
 const SPEED = 30;
+var LOST_DISTANCE = 70;
 
 export default class Slime extends Enemy {
     constructor(config) {
@@ -46,6 +47,8 @@ export default class Slime extends Enemy {
                     let vel = new Phaser.Geom.Point(this.ai.target.x - this.x, this.ai.target.y - this.y);
                     if (Phaser.Geom.Point.GetMagnitude(vel) < 5) {
                         this.body.setVelocity(0, 0);
+                    } else if (Phaser.Geom.Point.GetMagnitude(vel) > LOST_DISTANCE) {
+                        this.ai.state = 'idle';
                     } else {
                         vel = Phaser.Geom.Point.SetMagnitude(vel, SPEED);
                         this.body.setVelocity(vel.x, vel.y);

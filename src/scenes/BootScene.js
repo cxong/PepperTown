@@ -45,13 +45,11 @@ class BootScene extends Phaser.Scene {
             frameWidth: 16,
             frameHeight: 32
         });
-        this.load.spritesheet('pepper', 'assets/images/pepper.png', {
-            frameWidth: 24,
-            frameHeight: 32
-        });
-        this.load.spritesheet('coriander', 'assets/images/coriander.png', {
-            frameWidth: 24,
-            frameHeight: 32
+        ['pepper', 'coriander', 'saffron', 'shichimi'].forEach(girl => {
+            this.load.spritesheet(girl, 'assets/images/' + girl + '.png', {
+                frameWidth: 24,
+                frameHeight: 32
+            });
         });
         this.load.spritesheet('characters', 'assets/images/characters.png', {
             frameWidth: 16,
