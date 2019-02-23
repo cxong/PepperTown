@@ -60,6 +60,10 @@ class BootScene extends Phaser.Scene {
         this.load.image('bar-front', 'assets/images/bar-front.png');
         this.load.image('select-frame', 'assets/images/select-frame.png');
         this.load.image('dialog-back', 'assets/images/dialog-back.png');
+        ['magic', 'item', 'armor', 'weapon'].forEach(shop => {
+            const key = 'portrait-' + shop;
+            this.load.image(key, 'assets/images/' + key + '.png');
+        })
 
         // Beginning of an atlas to replace the spritesheets above. Always use spriteatlases. I use TexturePacker to prepare them.
         // Check rawAssets folder for the TexturePacker project I use to prepare these files.

@@ -13,6 +13,7 @@ export default class Dialog extends Phaser.GameObjects.Sprite {
         // Add child elements
         this.elements = scene.add.group();
         this.elements.add(scene.add.bitmapText(x + 16, y + 16, 'font', title, 8));
+        this.elements.add(scene.add.sprite(x + width - 42, y + height - 47, portrait));
         this.hide();
     }
 
