@@ -9,6 +9,7 @@ const HEAL_RATE = 2;
 export default class Girl extends Phaser.GameObjects.Sprite {
     constructor(config) {
         super(config.scene, config.x, config.y, config.key);
+        this.key = config.key;
         config.scene.physics.world.enable(this);
         config.scene.add.existing(this);
         this.dir = 'down';
@@ -17,7 +18,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
 
         this.wasHurt = -1;
         this.flashToggle = false;
-        this.anims.play('stand' + this.dir);
+        this.animPlay('stand');
         this.health = {
             max: 5,
             value: 5,
@@ -29,6 +30,14 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         this.ai = {
             state: 'running'
         };
+    }
+
+    animPlay(anim) {
+        const animKey = this.key + anim + this.dir;
+        if (!this.anims.currentAnim ||
+            (this.anims.currentAnim.key !== animKey && !this.scene.physics.world.isPaused)) {
+            this.anims.play(animKey);
+        }
     }
 
     update(keys, time, delta) {
@@ -113,10 +122,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
             anim = 'stand';
         }
 
-        anim += this.dir;
-        if (this.anims.currentAnim.key !== anim && !this.scene.physics.world.isPaused) {
-            this.anims.play(anim);
-        }
+        this.animPlay(anim);
 
         if (input.down && this.body.velocity.x < 100) {
             this.bending = true;

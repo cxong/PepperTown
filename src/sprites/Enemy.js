@@ -61,9 +61,21 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     findPlayer() {
-        if (Phaser.Math.Distance.Between(this.scene.mario.x, this.scene.mario.y, this.x, this.y) < DETECTION_DISTANCE) {
-            return this.scene.mario;
-        }
-        return null;
+        let minDistance = -1;
+        let closestGirl = null;
+        this.scene.girlGroup.children.entries.forEach(girl => {
+            const distance = Phaser.Math.Distance.Between(girl.x, girl.y, this.x, this.y);
+            if (distance > DETECTION_DISTANCE) {
+                return;
+            }
+            if (girl.health.value < 1) {
+                return;
+            }
+            if (closestGirl === null || minDistance > distance) {
+                minDistance = distance;
+                closestGirl = girl;
+            }
+        })
+        return closestGirl;
     }
 }

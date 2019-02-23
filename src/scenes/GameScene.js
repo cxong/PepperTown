@@ -45,6 +45,8 @@ class GameScene extends Phaser.Scene {
             collide: true
         });
 
+        this.girlGroup = this.add.group();
+
         // This group contains all enemies for collision and calling update-methods
         this.enemyGroup = this.add.group();
 
@@ -69,12 +71,18 @@ class GameScene extends Phaser.Scene {
         // If the game ended while physics was disabled
         this.physics.world.resume();
 
-        this.mario = new Girl({
+        this.girlGroup.add(new Girl({
             scene: this,
-            key: 'mario',
+            key: 'pepper',
             x: 16 * 6,
             y: this.sys.game.config.height - 48 - 48
-        });
+        }));
+        this.girlGroup.add(new Girl({
+            scene: this,
+            key: 'coriander',
+            x: 16 * 6,
+            y: this.sys.game.config.height - 48 - 48 - 48
+        }));
 
         this.cameras.main.roundPixels = true;
 
@@ -115,7 +123,9 @@ class GameScene extends Phaser.Scene {
             this.cameras.main.scrollX += CAMERA_PAN;
         }
 
-        this.mario.update(this.keys, time, delta);
+        this.girlGroup.children.entries.forEach(
+            sprite => { sprite.update(this.keys, time, delta); }
+        );
 
         // Run the update method of all enemies
         this.enemyGroup.children.entries.forEach(

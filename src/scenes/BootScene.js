@@ -49,6 +49,10 @@ class BootScene extends Phaser.Scene {
             frameWidth: 24,
             frameHeight: 32
         });
+        this.load.spritesheet('coriander', 'assets/images/coriander.png', {
+            frameWidth: 24,
+            frameHeight: 32
+        });
         this.load.spritesheet('characters', 'assets/images/characters.png', {
             frameWidth: 16,
             frameHeight: 16

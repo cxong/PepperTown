@@ -67,7 +67,9 @@ export default class Slime extends Enemy {
                 break;
         }
 
-        this.scene.physics.world.overlap(this, this.scene.mario, this.hurtPC);
+        this.scene.girlGroup.children.entries.forEach(girl => {
+            this.scene.physics.world.overlap(this, girl, this.hurtPC);
+        })
     }
 
     animPlay(key) {

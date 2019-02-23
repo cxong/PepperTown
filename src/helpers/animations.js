@@ -1,27 +1,29 @@
 export default function makeAnimations(scene) {
     let config = {};
 
-    ['up', 'right', 'down', 'left'].forEach(
-        (dir, index) => {
-            config = {
-                key: 'run' + dir,
-                frames: scene.anims.generateFrameNames('pepper', {
-                    frames: [0, 1, 2, 1].map(x => x + index * 7)
-                }),
-                frameRate: 10,
-                repeat: -1,
-                repeatDelay: 0
-            };
-            scene.anims.create(config);
+    ['pepper', 'coriander'].forEach(girl => {
+        ['up', 'right', 'down', 'left'].forEach(
+            (dir, index) => {
+                config = {
+                    key: girl + 'run' + dir,
+                    frames: scene.anims.generateFrameNames(girl, {
+                        frames: [0, 1, 2, 1].map(x => x + index * 7)
+                    }),
+                    frameRate: 10,
+                    repeat: -1,
+                    repeatDelay: 0
+                };
+                scene.anims.create(config);
 
-            config.key = 'stand' + dir;
-            config.frames = scene.anims.generateFrameNames('pepper', {
-                start: index * 7 + 1,
-                end: index * 7 + 1
-            });
-            scene.anims.create(config);
-        }
-    );
+                config.key = girl + 'stand' + dir;
+                config.frames = scene.anims.generateFrameNames(girl, {
+                    start: index * 7 + 1,
+                    end: index * 7 + 1
+                });
+                scene.anims.create(config);
+            }
+        );
+    });
 
     const CHARACTERS_STRIDE = 12;
     const CHARACTERS_STRIDE_Y = 4;
