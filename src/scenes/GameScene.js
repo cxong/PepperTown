@@ -41,9 +41,6 @@ class GameScene extends Phaser.Scene {
         // Probably not the correct way of doing this:
         this.physics.world.bounds.width = this.groundLayer.width;
 
-        // Add the background as an tilesprite.
-        this.add.tileSprite(0, 0, this.groundLayer.width, 500, 'background-clouds');
-
         // Set collision by property
         this.groundLayer.setCollisionByProperty({
             collide: true

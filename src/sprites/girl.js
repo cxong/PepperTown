@@ -1,7 +1,9 @@
-var SPEED = 50;
-var START_X = 16 * 6;
-var WAS_HURT = 1000;
-var FIRE_COOLDOWN = 500;
+import HealthBar from '../helpers/healthbar.js';
+
+const SPEED = 50;
+const START_X = 16 * 6;
+const WAS_HURT = 1000;
+const FIRE_COOLDOWN = 500;
 
 export default class Girl extends Phaser.GameObjects.Sprite {
     constructor(config) {
@@ -17,7 +19,8 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         this.anims.play('stand' + this.dir);
         this.health = {
             max: 5,
-            value: 5
+            value: 5,
+            bar: new HealthBar(config.scene, this)
         };
         this.type = 'mario';
         this.fireCoolDown = 0;
@@ -29,6 +32,8 @@ export default class Girl extends Phaser.GameObjects.Sprite {
 
     update(keys, time, delta) {
         this.fireCoolDown -= delta;
+
+        this.health.bar.update();
 
         //this.scene.physics.world.collide(this, this.scene.groundLayer, this.scene.tileCollision);
 

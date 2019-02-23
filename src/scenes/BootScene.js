@@ -24,8 +24,6 @@ class BootScene extends Phaser.Scene {
             this.scene.start('TitleScene');
         });
 
-        this.load.image('background-clouds', 'assets/images/clouds.png'); // 16-bit later
-
         // Tilemap with a lot of objects and tile-properties tricks
         this.load.tilemapTiledJSON('map', 'assets/tilemaps/map.json');
 
@@ -55,6 +53,9 @@ class BootScene extends Phaser.Scene {
             frameWidth: 16,
             frameHeight: 16
         });
+
+        this.load.image('bar-back', 'assets/images/bar-back.png');
+        this.load.image('bar-front', 'assets/images/bar-front.png');
 
         // Beginning of an atlas to replace the spritesheets above. Always use spriteatlases. I use TexturePacker to prepare them.
         // Check rawAssets folder for the TexturePacker project I use to prepare these files.
