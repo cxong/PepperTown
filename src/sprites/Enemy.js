@@ -39,7 +39,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     hurtPC(enemy, pc) {
         if (pc.hurtBy(enemy)) {
-            enemy.die(enemy, 1);
+            enemy.die(enemy, enemy.scene.damageFactor);
             enemy.scene.sound.playAudioSprite('sfx', 'smb_stomp');
         }
     }
@@ -58,6 +58,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         this.scene.enemyGroup.remove(this);
         this.destroy();
         this.health.bar.destroy();
+        this.health.bar.barFront.destroy();
     }
 
     findPlayer() {
