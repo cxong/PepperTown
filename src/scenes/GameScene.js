@@ -99,12 +99,6 @@ class GameScene extends Phaser.Scene {
             return;
         }
 
-        this.levelTimer.time -= delta * 2;
-        if (this.levelTimer.time - this.levelTimer.displayedTime * 1000 < 1000) {
-            this.levelTimer.displayedTime = Math.round(this.levelTimer.time / 1000);
-            this.levelTimer.textObject.setText(('' + this.levelTimer.displayedTime).padStart(3, '0'));
-        }
-
         // Spawn slimes
         const idealSlimes = Math.min(Math.round(this.enemiesKilled * 0.02) + 20, this.left.pts);
         while (this.enemyGroup.getLength() < idealSlimes) {
@@ -169,31 +163,40 @@ class GameScene extends Phaser.Scene {
     }
 
     onKill() {
-        this.left.pts--;
-        this.left.textObject.setText(('' + this.left.pts).padStart(6, '0'));
+        this.setLeft(this.left.pts - 1);
         this.enemiesKilled++;
+        this.setCash(this.cash.value + 10);
+    }
+
+    setLeft(left) {
+        this.left.pts = left;
+        this.left.textObject.setText(('' + this.left.pts).padStart(4, '0'));
+    }
+
+    setCash(value) {
+        this.cash.value = value;
+        this.cash.textObject.setText(('' + this.cash.value).padStart(6, '0'));
     }
 
     createHUD() {
-        const hud = this.add.bitmapText(5 * 8, 8, 'font', 'LEFT                       TIME', 8);
+        const hud = this.add.bitmapText(5 * 8, 8, 'font', 'CASH                       LEFT', 8);
         hud.setScrollFactor(0, 0);
-        this.levelTimer = {
-            textObject: this.add.bitmapText(36 * 8, 16, 'font', '255', 8),
-            time: 150 * 1000,
-            displayedTime: 255,
-            hurry: false
-        };
-        this.levelTimer.textObject.setScrollFactor(0, 0);
         this.left = {
             pts: TOTAL_SLIMES,
-            textObject: this.add.bitmapText(5 * 8, 16, 'font', '000000', 8)
+            textObject: this.add.bitmapText(36 * 8, 16, 'font', '000000', 8)
         };
-        this.left.textObject.setText(('' + this.left.pts).padStart(6, '0'));
+        this.setLeft(TOTAL_SLIMES);
         this.left.textObject.setScrollFactor(0, 0);
+        this.cash = {
+            textObject: this.add.bitmapText(5 * 8, 16, 'font', '0', 8),
+            value: 0
+        };
+        this.setCash(0);
+        this.cash.textObject.setScrollFactor(0, 0);
 
         if (this.attractMode) {
             hud.alpha = 0;
-            this.levelTimer.textObject.alpha = 0;
+            this.cash.textObject.alpha = 0;
             this.left.textObject.alpha = 0;
         }
 
