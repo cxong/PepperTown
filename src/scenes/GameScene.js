@@ -1,4 +1,5 @@
 import Girl from '../sprites/girl';
+import Slime from '../sprites/slime';
 import Fire from '../sprites/Fire';
 
 class GameScene extends Phaser.Scene {
@@ -30,8 +31,8 @@ class GameScene extends Phaser.Scene {
         this.map = this.make.tilemap({
             key: 'map'
         });
-        //this.tileset = this.map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
         this.tileset = this.map.addTilesetImage('basictiles', 'basictiles');
+        this.tilesetEnemies = this.map.addTilesetImage('characters', 'characters');
 
         // Dynamic layer because we want breakable and animated tiles
         this.groundLayer = this.map.createDynamicLayer('world', this.tileset, 0, 0);
@@ -213,18 +214,6 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    /* * To be removed, supported natively now:
-     * setCollisionByProperty(map) {
-      Object.keys(map.tilesets[0].tileProperties).forEach(
-        (id) => {
-
-          if (map.tilesets[0].tileProperties[id].collide) {
-            map.setCollision(parseInt(id) + 1);
-          }
-        }
-      )
-    } */
-
     updateScore(score) {
         this.score.pts += score;
         this.score.textObject.setText(('' + this.score.pts).padStart(6, '0'));
@@ -244,33 +233,27 @@ class GameScene extends Phaser.Scene {
     parseObjectLayers() {
         // The map has one object layer with enemies as stamped tiles,
         // each tile has properties containing info on what enemy it represents.
-        /*this.map.getObjectLayer('enemies').objects.forEach(
+        this.map.getObjectLayer('enemies').objects.forEach(
             (enemy) => {
                 let enemyObject;
-                switch (this.tileset.tileProperties[enemy.gid - 1].name) {
-                    case 'goomba':
-                        enemyObject = new Goomba({
+                const index = enemy.gid - 1 - this.tilesetEnemies.firstgid;
+                const tileProps = this.tilesetEnemies.tileProperties[index];
+                switch (tileProps.name) {
+                    case 'slime':
+                        enemyObject = new Slime({
                             scene: this,
-                            key: 'sprites16',
-                            x: enemy.x,
-                            y: enemy.y
-                        });
-                        break;
-                    case 'turtle':
-                        enemyObject = new Turtle({
-                            scene: this,
-                            key: 'mario-sprites',
+                            key: 'characters',
                             x: enemy.x,
                             y: enemy.y
                         });
                         break;
                     default:
-                        console.error('Unknown:', this.tileset.tileProperties[enemy.gid - 1]); // eslint-disable-line no-console
+                        console.error('Unknown:', tileProps); // eslint-disable-line no-console
                         break;
                 }
                 this.enemyGroup.add(enemyObject);
             }
-        );*/
+        );
 
         // The map has an object layer with 'modifiers' that do 'stuff', see below
         /*this.map.getObjectLayer('modifiers').objects.forEach((modifier) => {

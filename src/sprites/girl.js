@@ -122,7 +122,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
     }
 
     hurtBy(enemy) {
-        if (!this.alive.value < 1) {
+        if (this.health.value < 1) {
             return;
         }
         if (this.wasHurt < 1) {

@@ -1,10 +1,10 @@
 import Enemy from './Enemy';
 
-export default class Goomba extends Enemy {
+export default class Slime extends Enemy {
     constructor(config) {
         super(config);
         this.body.setVelocity(0, 0).setBounce(0, 0).setCollideWorldBounds(false);
-        this.anims.play('goomba');
+        this.anims.play('slime/standdown');
         this.killAt = 0;
     }
 
@@ -13,7 +13,6 @@ export default class Goomba extends Enemy {
         if (!this.activated()) {
             return;
         }
-        this.scene.physics.world.collide(this, this.scene.groundLayer);
         if (this.killAt !== 0) {
             // The killtimer is set, keep the flat Goomba then kill it for good.
             this.body.setVelocityX(0);
@@ -26,12 +25,6 @@ export default class Goomba extends Enemy {
 
         // Collide with Mario!
         this.scene.physics.world.overlap(this, this.scene.mario, this.marioHit);
-
-        // The Goomba stopped, better try to walk in the other direction.
-        if (this.body.velocity.x === 0) {
-            this.direction = -this.direction;
-            this.body.velocity.x = this.direction;
-        }
     }
 
     marioHit(enemy, mario) {
@@ -43,8 +36,8 @@ export default class Goomba extends Enemy {
             // get points
             enemy.scene.updateScore(100);
         } else {
-            // Mario collides with the enemy
-            enemy.hurtMario(enemy, mario);
+            // PC collides with the enemy
+            enemy.hurtPC(enemy, mario);
         }
     }
 

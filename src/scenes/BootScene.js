@@ -27,8 +27,7 @@ class BootScene extends Phaser.Scene {
         this.load.image('background-clouds', 'assets/images/clouds.png'); // 16-bit later
 
         // Tilemap with a lot of objects and tile-properties tricks
-        this.load.tilemapTiledJSON('map', 'assets/tilemaps/super-mario.json');
-        //this.load.tilemapTiledJSON('map', 'assets/tilemaps/tiny16.json');
+        this.load.tilemapTiledJSON('map', 'assets/tilemaps/map.json');
 
         // I load the tiles as a spritesheet so I can use it for both sprites and tiles,
         // Normally you should load it as an image.
@@ -51,6 +50,10 @@ class BootScene extends Phaser.Scene {
         this.load.spritesheet('pepper', 'assets/images/pepper.png', {
             frameWidth: 24,
             frameHeight: 32
+        });
+        this.load.spritesheet('characters', 'assets/images/characters.png', {
+            frameWidth: 16,
+            frameHeight: 16
         });
 
         // Beginning of an atlas to replace the spritesheets above. Always use spriteatlases. I use TexturePacker to prepare them.
