@@ -46,9 +46,8 @@ export default class Girl extends Phaser.GameObjects.Sprite {
 
     update(keys, time, delta) {
         this.depth = this.y;
-        this.fireCoolDown -= delta * this.scene.attackSpeed;
+        this.fireCoolDown -= delta;
         this.healCooldown -= delta;
-
         this.health.bar.update();
 
         if (this.wasHurt > 0) {
@@ -109,6 +108,9 @@ export default class Girl extends Phaser.GameObjects.Sprite {
                 }
                 break;
         }
+        if (this.ai.state !== 'returning') {
+            this.health.value = Math.min(this.health.max, this.health.value + this.scene.regen * delta / 1000);
+        }
 
         this.body.setVelocityX(0);
         this.body.setVelocityY(0);
@@ -155,13 +157,13 @@ export default class Girl extends Phaser.GameObjects.Sprite {
             return false;
         }
         if (this.wasHurt < 1) {
-            this.health.value -= 1 * this.scene.defenseFactor;;
+            this.health.value -= 1 * this.scene.defenseFactor;
             this.wasHurt = WAS_HURT;
         }
         this.ai.state = 'fighting';
         this.ai.target = enemy;
         if (this.fireCoolDown < 1) {
-            this.fireCoolDown = FIRE_COOLDOWN;
+            this.fireCoolDown = FIRE_COOLDOWN / this.scene.attackSpeed;
             return true;
         }
         return false;

@@ -91,6 +91,7 @@ class GameScene extends Phaser.Scene {
         this.returnSpeed = 1;
         this.attackSpeed = 1;
         this.defenseFactor = 1;
+        this.regen = 0;
     }
 
     update(time, delta) {
@@ -208,7 +209,8 @@ class GameScene extends Phaser.Scene {
         this.shops = this.add.group();
 
         this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', [
-            [{iconFrame: 9 + 12 * 13, text: 'PORTAL', effect: s => s.returnSpeed = 10, cost: 1500}]
+            [{iconFrame: 9 + 12 * 13, text: 'PORTAL', effect: s => s.returnSpeed = 10, cost: 1500}],
+            [{iconFrame: 2 + 1 * 13, text: 'REGEN RING', effect: s => s.regen = 0.5, cost: 2000}]
         ]));
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
             [
@@ -219,11 +221,11 @@ class GameScene extends Phaser.Scene {
                 {iconFrame: 8 + 10 * 13, text: 'SPEED 5', effect: s => s.speedMultiplier = 4, cost: 2500}
             ],
             [
-                {iconFrame: 7 + 11 * 13, text: 'SHIELD 1', effect: s => s.defenseFactor = 0.8, cost: 400},
-                {iconFrame: 6 + 11 * 13, text: 'SHIELD 2', effect: s => s.defenseFactor = 0.7, cost: 600},
-                {iconFrame: 5 + 11 * 13, text: 'SHIELD 3', effect: s => s.defenseFactor = 0.63, cost: 900},
-                {iconFrame: 9 + 11 * 13, text: 'SHIELD 4', effect: s => s.defenseFactor = 0.58, cost: 1100},
-                {iconFrame: 8 + 11 * 13, text: 'SHIELD 5', effect: s => s.defenseFactor = 0.5, cost: 1500}
+                {iconFrame: 7 + 11 * 13, text: 'DEFENSE 1', effect: s => s.defenseFactor = 0.8, cost: 400},
+                {iconFrame: 6 + 11 * 13, text: 'DEFENSE 2', effect: s => s.defenseFactor = 0.7, cost: 600},
+                {iconFrame: 5 + 11 * 13, text: 'DEFENSE 3', effect: s => s.defenseFactor = 0.63, cost: 900},
+                {iconFrame: 9 + 11 * 13, text: 'DEFENSE 4', effect: s => s.defenseFactor = 0.58, cost: 1100},
+                {iconFrame: 8 + 11 * 13, text: 'DEFENSE 5', effect: s => s.defenseFactor = 0.5, cost: 1500}
             ]
         ]));
         this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP', [
