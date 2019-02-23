@@ -89,6 +89,7 @@ class GameScene extends Phaser.Scene {
         this.speedMultiplier = 1;
         this.healFactor = 1;
         this.damageFactor = 1;
+        this.returnSpeed = 1;
     }
 
     update(time, delta) {
@@ -205,7 +206,9 @@ class GameScene extends Phaser.Scene {
         // Add selection frames for the shops
         this.shops = this.add.group();
 
-        this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', []));
+        this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', [
+            {iconFrame: 9 + 12 * 13, text: 'FAST RETURN', effect: s => s.returnSpeed = 10, cost: 1500}
+        ]));
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
             {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2, cost: 500}
         ]));
