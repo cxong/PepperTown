@@ -68,6 +68,7 @@ class BootScene extends Phaser.Scene {
         });
 
         this.load.image('title', 'assets/images/title.png');
+        this.load.image('win', 'assets/images/win.png');
         this.load.image('bar-back', 'assets/images/bar-back.png');
         this.load.image('bar-front', 'assets/images/bar-front.png');
         this.load.image('select-frame', 'assets/images/select-frame.png');

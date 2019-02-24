@@ -19,6 +19,7 @@ class GameScene extends Phaser.Scene {
 
     create() {
         this.attractMode = this.registry.get('attractMode');
+        this.win = null;
 
         // Add and play the music
         this.music = this.sound.add('overworld');
@@ -152,6 +153,11 @@ class GameScene extends Phaser.Scene {
                 hp: slimeHP,
                 damage: Math.ceil(slimeHP / 2),
             }));
+        }
+
+        if (idealSlimes <= 0 && !this.win) {
+            this.win = this.add.sprite(this.sys.game.config.width / 2, 16 * 7, 'win');
+            this.win.depth = 9999;
         }
 
         let input = {
