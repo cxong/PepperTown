@@ -31,13 +31,7 @@ Featuring characters and art from [Pepper&Carrot](https://www.peppercarrot.com) 
 # Setup
 You’ll need to install a few things before you have a working copy of the project.
 
-## 1. Clone this repo:
-
-Navigate into your workspace directory.
-
-Run:
-
-```git clone https://github.com/nkholski/phaser3-es6-webpack.git```
+## 1. Clone this repo
 
 ## 2. Install node.js and npm:
 
