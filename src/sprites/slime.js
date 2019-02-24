@@ -83,8 +83,8 @@ export default class Slime extends Enemy {
         }
     }
 
-    die(enemy, damage) {
-        const sound = enemy.scene.sound.add('hit');
+    die(enemy, damage, soundKey) {
+        const sound = enemy.scene.sound.add(soundKey);
         sound.play();
         sound.volume = 0.5;
         this.health.value -= damage;

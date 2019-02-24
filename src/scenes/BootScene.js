@@ -111,6 +111,10 @@ class BootScene extends Phaser.Scene {
             'assets/audio/hit.ogg',
             'assets/audio/hit.mp3'
         ]);
+        this.load.audio('hit2', [
+            'assets/audio/hit2.ogg',
+            'assets/audio/hit2.mp3'
+        ]);
         this.load.audio('buy', [
             'assets/audio/buy.ogg',
             'assets/audio/buy.mp3'

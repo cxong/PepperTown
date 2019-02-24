@@ -44,7 +44,8 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
 
     hurtPC(enemy, pc) {
         if (pc.hurtBy(enemy)) {
-            enemy.die(enemy, enemy.scene.damageFactor);
+            const hit = enemy.scene.enemyHitDamage();
+            enemy.die(enemy, hit.damage, hit.soundKey);
         }
     }
 

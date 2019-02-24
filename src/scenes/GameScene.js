@@ -97,6 +97,15 @@ class GameScene extends Phaser.Scene {
         this.defenseFactor = 1;
         this.regen = 0;
         this.hpFactor = 1;
+        this.critChance = 0;
+    }
+
+    enemyHitDamage() {
+        const crit = Math.random() < this.critChance;
+        return {
+            damage: this.damageFactor * (crit ? 4 : 1),
+            soundKey: crit ? 'hit2': 'hit'
+        };
     }
 
     update(time, delta) {
@@ -220,7 +229,11 @@ class GameScene extends Phaser.Scene {
 
         this.magicShop = this.shops.add(new SelectFrame(this, 0, 0, 4 * 16, 3 * 16, 'portrait-magic', 'MAGIC SHOP', [
             [{iconFrame: 9 + 12 * 13, text: 'PORTAL', effect: s => s.returnSpeed = 8, cost: 1500}],
-            [{iconFrame: 2 + 1 * 13, text: 'REGEN RING', effect: s => s.regen = 0.5, cost: 2000}]
+            [{iconFrame: 2 + 1 * 13, text: 'REGEN RING', effect: s => s.regen = 0.5, cost: 2000}],
+            [
+                {iconFrame: 3 + 1 * 13, text: 'CRITICAL 1', effect: s => s.critChance = 0.1, cost: 1000},
+                {iconFrame: 4 + 2 * 13, text: 'CRITICAL 2', effect: s => s.critChance = 0.2, cost: 5000}
+            ]
         ]));
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
             [
