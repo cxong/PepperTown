@@ -83,4 +83,22 @@ export default function makeAnimations(scene) {
         frameRate: 10
     };
     scene.anims.create(config);
+    config = {
+        key: 'splash',
+        frames: scene.anims.generateFrameNames('splash', {
+            start: 0,
+            end: 4
+        }),
+        frameRate: 30
+    };
+    scene.anims.create(config);
+    config = {
+        key: 'break',
+        frames: scene.anims.generateFrameNames('break', {
+            start: 0,
+            end: 4
+        }),
+        frameRate: 30
+    };
+    scene.anims.create(config);
 }

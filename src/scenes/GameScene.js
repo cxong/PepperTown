@@ -2,10 +2,9 @@ import Girl from '../sprites/girl';
 import Slime from '../sprites/slime';
 import SelectFrame from '../helpers/selectframe';
 import BuyButton from '../helpers/buybutton';
-import Coin from '../sprites/coin';
+import Wham from '../sprites/wham';
 
-const CAMERA_PAN = 10;
-const TOTAL_SLIMES = 5000;  // must kill this many to end
+const TOTAL_SLIMES = 2500;  // must kill this many to end
 
 class GameScene extends Phaser.Scene {
     constructor(test) {
@@ -97,6 +96,7 @@ class GameScene extends Phaser.Scene {
         this.attackSpeed = 1;
         this.defenseFactor = 1;
         this.regen = 0;
+        this.hpFactor = 1;
     }
 
     update(time, delta) {
@@ -111,9 +111,10 @@ class GameScene extends Phaser.Scene {
             this.enemyGroup.add(new Slime({
                 scene: this,
                 key: 'characters',
-                x: (Math.random() * 20 + 10) * 16,
+                x: (Math.random() * 16 + 10) * 16,
                 y: (Math.random() * 9 + 4) * 16,
-                hp: slimeHP
+                hp: slimeHP,
+                damage: Math.ceil(slimeHP / 2),
             }));
         }
 
@@ -180,7 +181,10 @@ class GameScene extends Phaser.Scene {
         this.cash.value = value;
         this.cash.textObject.setText(('' + this.cash.value).padStart(6, '0'));
         if (added) {
-            this.coinGroup.add(new Coin(this, x, y, isSmall));
+            y -= 24;
+            x += Math.random() * 8 - 4;
+            y += Math.random() * 8 - 4;
+            this.coinGroup.add(new Wham(this, x, y, 'coin', isSmall ? 'coin-small' : 'coin'));
             const sound = this.sound.add('coins');
             sound.play();
             if (isSmall) {
@@ -221,40 +225,49 @@ class GameScene extends Phaser.Scene {
         this.armorShop = this.shops.add(new SelectFrame(this, 1 * 16, 3 * 16, 4 * 16, 3 * 16, 'portrait-armor', 'ARMOR SHOP', [
             [
                 {iconFrame: 7 + 10 * 13, text: 'SPEED 1', effect: s => s.speedMultiplier = 1.2, cost: 500},
-                {iconFrame: 6 + 10 * 13, text: 'SPEED 2', effect: s => s.speedMultiplier = 1.4, cost: 700},
-                {iconFrame: 5 + 10 * 13, text: 'SPEED 3', effect: s => s.speedMultiplier = 1.7, cost: 1000},
-                {iconFrame: 9 + 10 * 13, text: 'SPEED 4', effect: s => s.speedMultiplier = 2.5, cost: 1500},
-                {iconFrame: 8 + 10 * 13, text: 'SPEED 5', effect: s => s.speedMultiplier = 4, cost: 2500}
+                {iconFrame: 6 + 10 * 13, text: 'SPEED 2', effect: s => s.speedMultiplier = 1.4, cost: 100},
+                {iconFrame: 5 + 10 * 13, text: 'SPEED 3', effect: s => s.speedMultiplier = 1.7, cost: 1500},
+                {iconFrame: 9 + 10 * 13, text: 'SPEED 4', effect: s => s.speedMultiplier = 2.5, cost: 2500},
+                {iconFrame: 8 + 10 * 13, text: 'SPEED 5', effect: s => s.speedMultiplier = 4, cost: 4000}
             ],
             [
                 {iconFrame: 7 + 11 * 13, text: 'DEFENSE 1', effect: s => s.defenseFactor = 0.8, cost: 400},
-                {iconFrame: 6 + 11 * 13, text: 'DEFENSE 2', effect: s => s.defenseFactor = 0.7, cost: 600},
-                {iconFrame: 5 + 11 * 13, text: 'DEFENSE 3', effect: s => s.defenseFactor = 0.63, cost: 900},
-                {iconFrame: 9 + 11 * 13, text: 'DEFENSE 4', effect: s => s.defenseFactor = 0.58, cost: 1100},
-                {iconFrame: 8 + 11 * 13, text: 'DEFENSE 5', effect: s => s.defenseFactor = 0.5, cost: 1500}
+                {iconFrame: 6 + 11 * 13, text: 'DEFENSE 2', effect: s => s.defenseFactor = 0.7, cost: 800},
+                {iconFrame: 5 + 11 * 13, text: 'DEFENSE 3', effect: s => s.defenseFactor = 0.63, cost: 1400},
+                {iconFrame: 9 + 11 * 13, text: 'DEFENSE 4', effect: s => s.defenseFactor = 0.58, cost: 2000},
+                {iconFrame: 8 + 11 * 13, text: 'DEFENSE 5', effect: s => s.defenseFactor = 0.5, cost: 4500}
+            ],
+            [
+                {iconFrame: 8 + 9 * 13, text: 'HEALTH 1', effect: s => s.hpFactor = 1.4, cost: 300},
+                {iconFrame: 2 + 9 * 13, text: 'HEALTH 2', effect: s => s.hpFactor = 1.7, cost: 600},
+                {iconFrame: 7 + 9 * 13, text: 'HEALTH 3', effect: s => s.hpFactor = 2, cost: 1450},
+                {iconFrame: 0 + 9 * 13, text: 'HEALTH 4', effect: s => s.hpFactor = 2.7, cost: 1950},
+                {iconFrame: 4 + 9 * 13, text: 'HEALTH 5', effect: s => s.hpFactor = 4, cost: 3000},
+                {iconFrame: 6 + 9 * 13, text: 'HEALTH 6', effect: s => s.hpFactor = 6, cost: 5000},
+                {iconFrame: 5 + 9 * 13, text: 'HEALTH 7', effect: s => s.hpFactor = 10, cost: 8000},
             ]
         ]));
         this.itemShop = this.shops.add(new SelectFrame(this, 0, 7 * 16, 4 * 16, 3 * 16, 'portrait-item', 'ITEM SHOP', [
             [
-                {iconFrame: 1 + 13 * 13, text: 'HERBS 1', effect: s => s.healFactor = 2, cost: 200},
-                {iconFrame: 1 + 12 * 13, text: 'HERBS 2', effect: s => s.healFactor = 3, cost: 400},
-                {iconFrame: 2 + 13 * 13, text: 'HERBS 3', effect: s => s.healFactor = 5, cost: 750},
-                {iconFrame: 2 + 12 * 13, text: 'HERBS 4', effect: s => s.healFactor = 8, cost: 1000},
-                {iconFrame: 0 + 12 * 13, text: 'HERBS 5', effect: s => s.healFactor = 13, cost: 1300}
+                {iconFrame: 1 + 13 * 13, text: 'HERBS 1', effect: s => s.healFactor = 2, cost: 400},
+                {iconFrame: 1 + 12 * 13, text: 'HERBS 2', effect: s => s.healFactor = 3, cost: 800},
+                {iconFrame: 2 + 13 * 13, text: 'HERBS 3', effect: s => s.healFactor = 5, cost: 1600},
+                {iconFrame: 2 + 12 * 13, text: 'HERBS 4', effect: s => s.healFactor = 8, cost: 3000},
+                {iconFrame: 0 + 12 * 13, text: 'HERBS 5', effect: s => s.healFactor = 13, cost: 5000}
             ]
         ]));
         this.weaponShop = this.shops.add(new SelectFrame(this, 0, 11 * 16, 5 * 16, 3 * 16, 'portrait-weapon', 'WEAPON SHOP', [
             [
                 {iconFrame: 0 + 7 * 13, text: 'DAMAGE 1', effect: s => s.damageFactor = 2, cost: 1000},
-                {iconFrame: 1 + 7 * 13, text: 'DAMAGE 2', effect: s => s.damageFactor = 3, cost: 1500},
-                {iconFrame: 2 + 7 * 13, text: 'DAMAGE 3', effect: s => s.damageFactor = 4, cost: 2000},
-                {iconFrame: 3 + 7 * 13, text: 'DAMAGE 4', effect: s => s.damageFactor = 5, cost: 2700},
-                {iconFrame: 10 + 7 * 13, text: 'DAMAGE 5', effect: s => s.damageFactor = 6, cost: 4000},
-                {iconFrame: 12 + 7 * 13, text: 'DAMAGE 6', effect: s => s.damageFactor = 8, cost: 6000}
+                {iconFrame: 1 + 7 * 13, text: 'DAMAGE 2', effect: s => s.damageFactor = 3, cost: 2000},
+                {iconFrame: 2 + 7 * 13, text: 'DAMAGE 3', effect: s => s.damageFactor = 4, cost: 4000},
+                {iconFrame: 3 + 7 * 13, text: 'DAMAGE 4', effect: s => s.damageFactor = 5, cost: 6500},
+                {iconFrame: 10 + 7 * 13, text: 'DAMAGE 5', effect: s => s.damageFactor = 6, cost: 8700},
+                {iconFrame: 12 + 7 * 13, text: 'DAMAGE 6', effect: s => s.damageFactor = 8, cost: 10000}
             ],
             [
-                {iconFrame: 10 + 9 * 13, text: 'ATTK SPD 1', effect: s => s.attackSpeed = 1.5, cost: 800},
-                {iconFrame: 10 + 10 * 13, text: 'ATTK SPD 2', effect: s => s.attackSpeed = 3, cost: 2000}
+                {iconFrame: 10 + 9 * 13, text: 'ATTK SPD 1', effect: s => s.attackSpeed = 1.5, cost: 1100},
+                {iconFrame: 10 + 10 * 13, text: 'ATTK SPD 2', effect: s => s.attackSpeed = 3, cost: 3500}
             ]
         ]));
 

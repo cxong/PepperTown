@@ -1,4 +1,5 @@
 import Enemy from './Enemy';
+import Wham from '../sprites/wham';
 
 const SPEED = 30;
 var LOST_DISTANCE = 70;
@@ -87,6 +88,7 @@ export default class Slime extends Enemy {
         sound.play();
         sound.volume = 0.5;
         this.health.value -= damage;
+        this.scene.coinGroup.add(new Wham(this.scene, this.x, this.y, 'break', 'break'));
         if (this.health.value <= 0) {
             this.alive = false;
             enemy.scene.onKill(enemy.health.max, enemy.x, enemy.y);

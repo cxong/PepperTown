@@ -13,6 +13,7 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
             value: config.hp,
             bar: new HealthBar(config.scene, this)
         };
+        this.damage = config.damage;
 
         // start still and wait until needed
         this.body.setVelocity(0, 0).setBounce(0, 0).setCollideWorldBounds(false);
@@ -23,6 +24,10 @@ export default class Enemy extends Phaser.GameObjects.Sprite {
         this.ai = {
             state: 'idle'
         };
+    }
+
+    maxHP() {
+        return this.health.max;
     }
 
     activated() {

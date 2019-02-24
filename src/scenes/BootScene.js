@@ -68,6 +68,14 @@ class BootScene extends Phaser.Scene {
             frameHeight: 15,
             spacing: 1
         });
+        this.load.spritesheet('break', 'assets/images/break01.png', {
+            frameWidth: 64,
+            frameHeight: 64
+        });
+        this.load.spritesheet('splash', 'assets/images/splash04.png', {
+            frameWidth: 64,
+            frameHeight: 64
+        });
 
         this.load.image('bar-back', 'assets/images/bar-back.png');
         this.load.image('bar-front', 'assets/images/bar-front.png');

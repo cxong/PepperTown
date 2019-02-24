@@ -1,4 +1,5 @@
 import HealthBar from '../helpers/healthbar.js';
+import Wham from '../sprites/wham';
 
 const SPEED = 50;
 const RETURN_SPEED_MULT = 2;
@@ -44,6 +45,10 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         }
     }
 
+    maxHP() {
+        return this.health.max * this.scene.hpFactor;
+    }
+
     update(keys, time, delta) {
         this.depth = this.y;
         this.fireCoolDown -= delta;
@@ -71,7 +76,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
         };
         switch (this.ai.state) {
             case 'running':
-                if (this.health.value <= 0 || this.x > 30 * 16) {
+                if (this.health.value <= 0 || this.x > 26 * 16) {
                     this.ai.state = 'returning';
                 } else {
                     input.right = true;
@@ -101,7 +106,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
                 }
                 break;
             case 'resting':
-                if (this.health.value < this.health.max) {
+                if (this.health.value < this.maxHP()) {
                     this.dir = 'down';
                     if (this.healCooldown < 1) {
                         this.onHeal();
@@ -112,7 +117,7 @@ export default class Girl extends Phaser.GameObjects.Sprite {
                 break;
         }
         if (this.ai.state !== 'returning') {
-            this.health.value = Math.min(this.health.max, this.health.value + this.scene.regen * delta / 1000);
+            this.health.value = Math.min(this.maxHP(), this.health.value + this.scene.regen * delta / 1000);
         }
 
         this.body.setVelocityX(0);
@@ -160,11 +165,12 @@ export default class Girl extends Phaser.GameObjects.Sprite {
             return false;
         }
         if (this.wasHurt < 1) {
-            this.health.value -= 1 * this.scene.defenseFactor;
+            this.health.value -= enemy.damage * this.scene.defenseFactor;
             this.wasHurt = WAS_HURT;
             const sound = this.scene.sound.add('hit');
             sound.play();
             sound.volume = 0.25;
+            this.scene.coinGroup.add(new Wham(this.scene, this.x, this.y, 'splash', 'splash'));
         }
         this.ai.state = 'fighting';
         this.ai.target = enemy;
