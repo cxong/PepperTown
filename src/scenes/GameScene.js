@@ -25,8 +25,12 @@ class GameScene extends Phaser.Scene {
         this.sounds = {
             buy: this.sound.add('buy'),
             close: this.sound.add('close'),
-            cursor: this.sound.add('cursor')
+            cursor: this.sound.add('cursor'),
+            confirm: this.sound.add('confirm')
         };
+        if (!this.attractMode) {
+            this.sounds.confirm.play();
+        }
 
         // Add the map + bind the tileset
         this.map = this.make.tilemap({
@@ -120,12 +124,6 @@ class GameScene extends Phaser.Scene {
             down: this.keys.down.isDown,
             fire: this.keys.fire.isDown
         };
-        if (input.left) {
-            this.cameras.main.scrollX -= CAMERA_PAN;
-        }
-        if (input.right) {
-            this.cameras.main.scrollX += CAMERA_PAN;
-        }
 
         this.girlGroup.children.entries.forEach(
             sprite => { sprite.update(this.keys, time, delta); }
