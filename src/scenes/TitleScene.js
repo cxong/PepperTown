@@ -15,20 +15,8 @@ class TitleScene extends Phaser.Scene {
         this.registry.set('restartScene', false);
         this.registry.set('attractMode', true);
 
-        let sh = window.screen.availHeight;
-        let sw = window.screen.availWidth;
-
-        // let ch = 0;
-        // let cw = 0;
-        let multiplier = 1;
-        if (sh / sw > 0.6) {
-            // Portrait, fit width
-            multiplier = sw / 400;
-        } else {
-            multiplier = sh / 240;
-        }
-        multiplier = Math.floor(multiplier);
-        let el = document.getElementsByTagName('canvas')[0];
+        const multiplier = 3;
+        const el = document.getElementsByTagName('canvas')[0];
         el.style.width = 400 * multiplier + 'px';
         el.style.height = 240 * multiplier + 'px';
 
