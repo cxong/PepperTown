@@ -4,7 +4,7 @@ import SelectFrame from '../helpers/selectframe';
 import BuyButton from '../helpers/buybutton';
 import Wham from '../sprites/wham';
 
-const TOTAL_SLIMES = 2500;  // must kill this many to end
+const TOTAL_SLIMES = 2000;  // must kill this many to end
 const SOUND_BANK_SIZE = 5;
 
 class GameScene extends Phaser.Scene {
