@@ -84,9 +84,7 @@ export default class Slime extends Enemy {
     }
 
     die(enemy, damage, soundKey) {
-        const sound = enemy.scene.sound.add(soundKey);
-        sound.play();
-        sound.volume = 0.5;
+        this.scene.playSoundBank(soundKey, 0.5);
         this.health.value -= damage;
         this.scene.coinGroup.add(new Wham(this.scene, this.x, this.y, 'break', 'break'));
         if (this.health.value <= 0) {

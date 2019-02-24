@@ -5,6 +5,7 @@ import BuyButton from '../helpers/buybutton';
 import Wham from '../sprites/wham';
 
 const TOTAL_SLIMES = 2500;  // must kill this many to end
+const SOUND_BANK_SIZE = 5;
 
 class GameScene extends Phaser.Scene {
     constructor(test) {
@@ -27,6 +28,25 @@ class GameScene extends Phaser.Scene {
             cursor: this.sound.add('cursor'),
             confirm: this.sound.add('confirm')
         };
+        this.soundBanks = {
+            coins: {
+                bank: [],
+                index: 0
+            },
+            hit: {
+                bank: [],
+                index: 0
+            },
+            hit2: {
+                bank: [],
+                index: 0
+            }
+        };
+        for (let i = 0; i < SOUND_BANK_SIZE; i++) {
+            this.soundBanks.coins.bank.push(this.sound.add('coins'));
+            this.soundBanks.hit.bank.push(this.sound.add('hit'));
+            this.soundBanks.hit2.bank.push(this.sound.add('hit2'));
+        }
         if (!this.attractMode) {
             this.sounds.confirm.play();
         }
@@ -100,6 +120,13 @@ class GameScene extends Phaser.Scene {
         this.critChance = 0;
     }
 
+    playSoundBank(key, volume) {
+        const bank = this.soundBanks[key];
+        bank.bank[bank.index].play();
+        bank.bank[bank.index].volume = volume;
+        bank.index = (bank.index + 1) % SOUND_BANK_SIZE;
+    }
+
     enemyHitDamage() {
         const crit = Math.random() < this.critChance;
         return {
@@ -151,28 +178,6 @@ class GameScene extends Phaser.Scene {
         );
     }
 
-    tileCollision(sprite, tile) {
-        if (sprite.type === 'mario') {
-        }
-
-        // If it's Mario and the body isn't blocked up it can't hit question marks or break bricks
-        // Otherwise Mario will break bricks he touch from the side while moving up.
-        if (sprite.type === 'mario' && !sprite.body.blocked.up) {
-            return;
-        }
-
-        // If the tile has a callback, lets fire it
-        if (tile.properties.callback) {
-            switch (tile.properties.callback) {
-                default:
-                    sprite.scene.sound.playAudioSprite('sfx', 'smb_bump');
-                    break;
-            }
-        } else {
-            sprite.scene.sound.playAudioSprite('sfx', 'smb_bump');
-        }
-    }
-
     onKill(hp, x, y) {
         this.setLeft(this.left.pts - 1);
         this.enemiesKilled++;
@@ -194,11 +199,7 @@ class GameScene extends Phaser.Scene {
             x += Math.random() * 8 - 4;
             y += Math.random() * 8 - 4;
             this.coinGroup.add(new Wham(this, x, y, 'coin', isSmall ? 'coin-small' : 'coin'));
-            const sound = this.sound.add('coins');
-            sound.play();
-            if (isSmall) {
-                sound.volume = 0.5;
-            }
+            this.playSoundBank('coins', isSmall ? 0.5 : 1);
         }
     }
 
