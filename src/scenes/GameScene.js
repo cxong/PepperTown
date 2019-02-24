@@ -103,7 +103,7 @@ class GameScene extends Phaser.Scene {
                 scene: this,
                 key: girl,
                 x: 16 * 6,
-                y: this.sys.game.config.height * 0.5 + ((index - 2) * 32)
+                y: this.sys.game.config.height * 0.5 + ((index - 1.5) * 32)
             }));
         });
 
