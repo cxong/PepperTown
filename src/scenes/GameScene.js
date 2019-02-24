@@ -147,7 +147,7 @@ class GameScene extends Phaser.Scene {
             this.enemyGroup.add(new Slime({
                 scene: this,
                 key: 'characters',
-                x: (Math.random() * 16 + 10) * 16,
+                x: (Math.random() * 15 + 10) * 16,
                 y: (Math.random() * 9 + 4) * 16,
                 hp: slimeHP,
                 damage: Math.ceil(slimeHP / 2),

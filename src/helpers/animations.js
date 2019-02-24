@@ -49,21 +49,6 @@ export default function makeAnimations(scene) {
         }
     );
 
-    config = {
-        key: 'dpad',
-        frames: [{
-            frame: 'controller/dpad',
-            key: 'mario-sprites'
-        }]
-    };
-    scene.anims.create(config);
-    config = {
-        key: 'button',
-        frames: [{
-            frame: 'controller/button',
-            key: 'mario-sprites'
-        }]
-    };
     scene.anims.create(config);
     config = {
         key: 'coin',

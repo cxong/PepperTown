@@ -29,22 +29,12 @@ class BootScene extends Phaser.Scene {
 
         // I load the tiles as a spritesheet so I can use it for both sprites and tiles,
         // Normally you should load it as an image.
-        this.load.spritesheet('tiles', 'assets/images/super-mario.png', {
-            frameWidth: 16,
-            frameHeight: 16,
-            spacing: 2
-        });
         this.load.spritesheet('basictiles', 'assets/images/basictiles.png', {
             frameWidth: 16,
             frameHeight: 16,
             spacing: 0
         });
 
-        // Spritesheets with fixed sizes. Should be replaced with atlas:
-        this.load.spritesheet('mario', 'assets/images/mario-sprites.png', {
-            frameWidth: 16,
-            frameHeight: 32
-        });
         ['pepper', 'coriander', 'saffron', 'shichimi'].forEach(girl => {
             this.load.spritesheet(girl, 'assets/images/' + girl + '.png', {
                 frameWidth: 24,
@@ -77,6 +67,7 @@ class BootScene extends Phaser.Scene {
             frameHeight: 64
         });
 
+        this.load.image('title', 'assets/images/title.png');
         this.load.image('bar-back', 'assets/images/bar-back.png');
         this.load.image('bar-front', 'assets/images/bar-front.png');
         this.load.image('select-frame', 'assets/images/select-frame.png');
@@ -86,23 +77,12 @@ class BootScene extends Phaser.Scene {
             this.load.image(key, 'assets/images/' + key + '.png');
         })
 
-        // Beginning of an atlas to replace the spritesheets above. Always use spriteatlases. I use TexturePacker to prepare them.
-        // Check rawAssets folder for the TexturePacker project I use to prepare these files.
-        this.load.atlas('mario-sprites', 'assets/mario-sprites.png', 'assets/mario-sprites.json');
-
         // Music to play. It's not properly edited for an continous loop, but game play experience isn't really the aim of this repository either.
         this.load.audio('overworld', [
             'assets/music/overworld.ogg',
             'assets/music/overworld.mp3'
         ]);
 
-        // Sound effects in a audioSprite.
-        this.load.audioSprite('sfx', 'assets/audio/sfx.json', [
-            'assets/audio/sfx.ogg',
-            'assets/audio/sfx.mp3'
-        ], {
-            instances: 4
-        });
         this.load.audio('coins', [
             'assets/audio/coins.ogg',
             'assets/audio/coins.mp3'
