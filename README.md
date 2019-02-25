@@ -20,6 +20,7 @@ Dialog by [StarNavigator](https://starnavigator.itch.io)
 - [Roguelike/RPG Items](https://opengameart.org/content/roguelikerpg-items) http://creativecommons.org/licenses/by-sa/3.0/
 - [16x16 Small and Medium Coin Animation](https://opengameart.org/content/16x16-small-and-medium-coin-animation) http://creativecommons.org/publicdomain/zero/1.0/
 - [Slime monster 24x24](https://opengameart.org/content/slime-monster-24x24) https://creativecommons.org/licenses/by/4.0/
+- [Golden UI - Bigger Than Ever edition](https://opengameart.org/content/golden-ui-bigger-than-ever-edition) http://creativecommons.org/licenses/by-sa/3.0/
 
 **Music**: [Adorable Ache](https://soundcloud.com/dragor/adorable-ache) by [Dragor](https://soundcloud.com/dragor), http://creativecommons.org/licenses/by-nc-sa/3.0/
 
