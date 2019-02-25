@@ -88,9 +88,10 @@ class GameScene extends Phaser.Scene {
         this.createHUD();
 
         this.coinGroup = this.add.group();
-        /*this.music.play({
+        this.music.play({
             loop: true
-        });*/
+        });
+        this.music.volume = 0.25;
         if (this.attractMode) {
             this.music.volume = 0;
         }

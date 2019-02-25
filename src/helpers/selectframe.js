@@ -39,7 +39,9 @@ export default class SelectFrame extends Phaser.GameObjects.Sprite {
     onClick(scene) {
         this.dialog.show(scene);
         scene.sounds.cursor.play();
-        this.hand.destroy();
-        this.hand = null;
+        if (this.hand) {
+            this.hand.destroy();
+            this.hand = null;
+        }
     }
 }

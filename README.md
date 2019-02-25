@@ -8,6 +8,8 @@ An RPG-themed idle game, [**Play Online**](https://congusbongus.itch.io/pepperto
 
 Featuring characters and art from [Pepper&Carrot](https://www.peppercarrot.com) by David Revoy https://creativecommons.org/licenses/by/4.0/
 
+Dialog by [StarNavigator](https://starnavigator.itch.io)
+
 **Code**: based on https://github.com/nkholski/phaser3-es6-webpack
 
 **GFX**:
@@ -18,6 +20,8 @@ Featuring characters and art from [Pepper&Carrot](https://www.peppercarrot.com) 
 - [Roguelike/RPG Items](https://opengameart.org/content/roguelikerpg-items) http://creativecommons.org/licenses/by-sa/3.0/
 - [16x16 Small and Medium Coin Animation](https://opengameart.org/content/16x16-small-and-medium-coin-animation) http://creativecommons.org/publicdomain/zero/1.0/
 - [Slime monster 24x24](https://opengameart.org/content/slime-monster-24x24) https://creativecommons.org/licenses/by/4.0/
+
+**Music**: [Adorable Ache](https://soundcloud.com/dragor/adorable-ache) by [Dragor](https://soundcloud.com/dragor), http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 **SFX**:
 
