@@ -1,4 +1,5 @@
 import Dialog from "./dialog";
+import Hand from "../sprites/hand";
 
 const ALPHA_PERIOD = 500;
 const ALPHA_MIN = 0.2;
@@ -15,6 +16,7 @@ export default class SelectFrame extends Phaser.GameObjects.Sprite {
         
         this.setInteractive({ useHandCursor: true });
         this.dialog = new Dialog(scene, 32, 32, 144, 176, portrait, title, buttons);
+        this.hand = new Hand(scene, x + width * .75, y + height * .75);
     }
 
     update(delta) {
@@ -29,10 +31,15 @@ export default class SelectFrame extends Phaser.GameObjects.Sprite {
         } else {
             this.alpha = 0.1;
         }
+        if (this.hand) {
+            this.hand.update(delta);
+        }
     }
 
     onClick(scene) {
         this.dialog.show(scene);
         scene.sounds.cursor.play();
+        this.hand.destroy();
+        this.hand = null;
     }
 }

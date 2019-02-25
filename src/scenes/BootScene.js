@@ -73,6 +73,7 @@ class BootScene extends Phaser.Scene {
         this.load.image('bar-front', 'assets/images/bar-front.png');
         this.load.image('select-frame', 'assets/images/select-frame.png');
         this.load.image('dialog-back', 'assets/images/dialog-back.png');
+        this.load.image('hand', 'assets/images/hand.png');
         ['magic', 'item', 'armor', 'weapon'].forEach(shop => {
             const key = 'portrait-' + shop;
             this.load.image(key, 'assets/images/' + key + '.png');
