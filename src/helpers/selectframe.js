@@ -16,7 +16,7 @@ export default class SelectFrame extends Phaser.GameObjects.Sprite {
         
         this.setInteractive({ useHandCursor: true });
         this.dialog = new Dialog(scene, 32, 32, 144, 176, portrait, title, buttons);
-        this.hand = new Hand(scene, x + width * .75, y + height * .75);
+        this.hand = new Hand(scene, x + width * .9, y + height * .9);
     }
 
     update(delta) {
