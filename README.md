@@ -38,20 +38,18 @@ You’ll need to install a few things before you have a working copy of the proj
 
 ## 1. Clone this repo
 
-## 2. Install node.js and npm:
+## 2. Install node.js and yarn:
 
 https://nodejs.org/en/
 
+https://yarnpkg.com/
 
-## 3. Install dependencies (optionally you could install [yarn](https://yarnpkg.com/)):
+
+## 3. Install dependencies:
 
 Navigate to the cloned repo’s directory.
 
-Run:
-
-```npm install```
-
-or if you choose yarn, just run ```yarn```
+Run: ```yarn```
 
 ## 4. Run the development server:
 
