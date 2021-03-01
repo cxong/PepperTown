@@ -1,8 +1,8 @@
 {
-  "name": "Phaser3ES6Webpack",
+  "name": "peppertown",
   "version": "1.1.0",
   "description": "",
-  "author": "niklas berg <me@niklasberg.se>",
+  "author": "congusbongus <congusbongus@gmail.com>",
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode=development",
