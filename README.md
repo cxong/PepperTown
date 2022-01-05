@@ -55,7 +55,7 @@ Run: ```yarn```
 
 Run:
 
-```npm run dev```
+```yarn run dev```
 
 This will run a server so you can run the game in a browser.
 
